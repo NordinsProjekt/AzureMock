@@ -20,13 +20,13 @@
 		</div>
 
 		<div class="azure-wizard-tabs">
-			<div class="azure-wizard-tab @(CurrentTab == 0 ? "active" : "")" @onclick='() => CurrentTab = 0'>
+			<div class="azure-wizard-tab @(CurrentTab == 0 ? "active" : "")" @onclick="() => CurrentTab = 0">
 				Basics
 			</div>
-			<div class="azure-wizard-tab @(CurrentTab == 1 ? "active" : "")" @onclick='() => CurrentTab = 1'>
+			<div class="azure-wizard-tab @(CurrentTab == 1 ? "active" : "")" @onclick="() => CurrentTab = 1">
 				Tags
 			</div>
-			<div class="azure-wizard-tab @(CurrentTab == 2 ? "active" : "")" @onclick='() => CurrentTab = 2'>
+			<div class="azure-wizard-tab @(CurrentTab == 2 ? "active" : "")" @onclick="() => CurrentTab = 2">
 				Review + create
 			</div>
 		</div>
@@ -288,37 +288,21 @@
 	{
 		ErrorMessage = string.Empty;
 
-		if (string.IsNullOrWhiteSpace(NewResourceGroup.Name))
+		// Use validator extension
+		var validation = NewResourceGroup.Validate();
+		
+		if (!validation.IsValid)
 		{
-			ErrorMessage = "Resource group name is required";
+			ErrorMessage = validation.ErrorMessage;
 			return false;
 		}
 
-		if (!System.Text.RegularExpressions.Regex.IsMatch(NewResourceGroup.Name, @"^[\w\-\.\(\)]+$"))
-		{
-			ErrorMessage = "Resource group name can only include alphanumeric, underscore, parentheses, hyphen, and period";
-			return false;
-		}
+		// Check for duplicates (business logic, not pure validation)
+		if (!ResourceService.ResourceGroupExists(NewResourceGroup.Name)) return true;
 
-		if (NewResourceGroup.Name.EndsWith('.'))
-		{
-			ErrorMessage = "Resource group name cannot end with a period";
-			return false;
-		}
+		ErrorMessage = "A resource group with this name already exists";
+		return false;
 
-		if (ResourceService.ResourceGroupExists(NewResourceGroup.Name))
-		{
-			ErrorMessage = "A resource group with this name already exists";
-			return false;
-		}
-
-		if (string.IsNullOrWhiteSpace(NewResourceGroup.Location))
-		{
-			ErrorMessage = "Region is required";
-			return false;
-		}
-
-		return true;
 	}
 
 	private void AddTag()
