@@ -13,6 +13,12 @@
 
     <h1 class="azure-page-title">Resource Groups</h1>
 
+    <div style="margin-bottom: 24px;">
+        <button class="azure-button azure-button-primary" @onclick='() => Navigation.NavigateTo("/create-resource-group")'>
+            + Create
+        </button>
+    </div>
+
     <div class="azure-resources">
         @if (ResourceGroupsList.Any())
         {
@@ -48,6 +54,9 @@
 </div>
 
 @code {
+    [Inject]
+    private NavigationManager Navigation { get; set; } = default!;
+
     [Inject]
     private AzureResourceService ResourceService { get; set; } = default!;
 

@@ -1,0 +1,370 @@
+﻿@page "/create-resource-group"
+@layout AzurePortalLayout
+@rendermode InteractiveServer
+
+<PageTitle>Create a resource group - Microsoft Azure</PageTitle>
+
+<div class="azure-container">
+	<div class="azure-breadcrumb">
+		<a href="/">Home</a>
+		<span>/</span>
+		<a href="/resource-groups">Resource groups</a>
+		<span>/</span>
+		<span>Create a resource group</span>
+	</div>
+
+	<div class="azure-wizard">
+		<div class="azure-wizard-header">
+			<h2>Create a resource group</h2>
+			<p>A resource group is a container that holds related resources for an Azure solution</p>
+		</div>
+
+		<div class="azure-wizard-tabs">
+			<div class="azure-wizard-tab @(CurrentTab == 0 ? "active" : "")" @onclick='() => CurrentTab = 0'>
+				Basics
+			</div>
+			<div class="azure-wizard-tab @(CurrentTab == 1 ? "active" : "")" @onclick='() => CurrentTab = 1'>
+				Tags
+			</div>
+			<div class="azure-wizard-tab @(CurrentTab == 2 ? "active" : "")" @onclick='() => CurrentTab = 2'>
+				Review + create
+			</div>
+		</div>
+
+		<div class="azure-wizard-content">
+			@if (CurrentTab == 0)
+			{
+				<div class="azure-form-section">
+					<h3>Project details</h3>
+					<div class="azure-info-box">
+						<p>Select the subscription to manage deployed resources and costs. Use resource groups like folders to organize and manage all your resources.</p>
+					</div>
+
+					<div class="azure-form-group">
+						<label>Subscription *</label>
+						<select>
+							<option value="azure-student" selected>Azure for Students</option>
+							<option value="pay-as-you-go">Pay-As-You-Go</option>
+							<option value="free-trial">Free Trial</option>
+						</select>
+						<small>All resources in an Azure subscription are billed together</small>
+					</div>
+				</div>
+
+				<div class="azure-form-section">
+					<h3>Resource group details</h3>
+
+					<div class="azure-form-group">
+						<label>Resource group *</label>
+						<input type="text" @bind="NewResourceGroup.Name" placeholder="e.g., myResourceGroup"/>
+						<small>A resource group name can include alphanumeric, underscore, parentheses, hyphen, period (except at end), and Unicode characters that match the allowed characters.</small>
+						@if (!string.IsNullOrEmpty(ErrorMessage))
+						{
+							<div class="error">@ErrorMessage</div>
+						}
+					</div>
+
+					<div class="azure-form-group">
+						<label>Region *</label>
+						<select @bind="NewResourceGroup.Location">
+							<option value="">Select a region</option>
+							@foreach (var location in Locations)
+							{
+								<option value="@location">@location</option>
+							}
+						</select>
+						<small>
+							<svg width="14" height="14" viewBox="0 0 16 16" style="vertical-align: middle; margin-right: 4px;">
+								<circle cx="8" cy="8" r="7" fill="none" stroke="#0078d4" stroke-width="1.5"/>
+								<path d="M8 4v4l3 2" stroke="#0078d4" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+							</svg>
+							The location of the resource group cannot be changed after creation. The location specifies where the resource group metadata is stored.
+						</small>
+					</div>
+				</div>
+			}
+			else if (CurrentTab == 1)
+			{
+				<div class="azure-form-section">
+					<h3>Tags</h3>
+					<div class="azure-info-box">
+						<p>Tags are name/value pairs that enable you to categorize resources and view consolidated billing by applying the same tag to multiple resources and resource groups.</p>
+					</div>
+
+					<p style="font-size:14px; color:#605e5c; margin-bottom:16px;">
+						Note that if you create tags and then change resource settings on other tabs, your tags will be automatically updated.
+					</p>
+
+					@if (Tags.Any())
+					{
+						<table class="azure-table" style="margin-bottom: 16px;">
+							<thead>
+							<tr>
+								<th>Name</th>
+								<th>Value</th>
+								<th style="width: 100px;">Actions</th>
+							</tr>
+							</thead>
+							<tbody>
+							@for (int i = 0; i < Tags.Count; i++)
+							{
+								var index = i;
+								<tr>
+									<td>
+										<input type="text" @bind="Tags[index].Key" style="width: 100%;"/>
+									</td>
+									<td>
+										<input type="text" @bind="Tags[index].Value" style="width: 100%;"/>
+									</td>
+									<td>
+										<button class="azure-link-button" @onclick='() => RemoveTag(index)'>Delete</button>
+									</td>
+								</tr>
+							}
+							</tbody>
+						</table>
+					}
+
+					<button class="azure-button azure-button-secondary" @onclick="AddTag">+ Add tag pair</button>
+				</div>
+
+				<div class="azure-form-section">
+					<h3>Common tags (optional)</h3>
+					<p style="font-size:14px; color:#605e5c; margin-bottom:12px;">Select from commonly used tags:</p>
+
+					<div style="display:flex; gap:8px; flex-wrap:wrap;">
+						<button class="azure-button azure-button-secondary" @onclick='() => AddPredefinedTag("Environment", "Development")'>Environment: Development</button>
+						<button class="azure-button azure-button-secondary" @onclick='() => AddPredefinedTag("Environment", "Production")'>Environment: Production</button>
+						<button class="azure-button azure-button-secondary" @onclick='() => AddPredefinedTag("Environment", "Test")'>Environment: Test</button>
+						<button class="azure-button azure-button-secondary" @onclick='() => AddPredefinedTag("Department", "IT")'>Department: IT</button>
+						<button class="azure-button azure-button-secondary" @onclick='() => AddPredefinedTag("CostCenter", "")'>Cost Center</button>
+						<button class="azure-button azure-button-secondary" @onclick='() => AddPredefinedTag("Owner", "")'>Owner</button>
+						<button class="azure-button azure-button-secondary" @onclick='() => AddPredefinedTag("Project", "")'>Project</button>
+					</div>
+				</div>
+			}
+			else if (CurrentTab == 2)
+			{
+				<div class="azure-form-section">
+					<h3>Review + create</h3>
+
+					<div class="azure-info-box" style="background-color: #dff6dd; border-left-color: #107c10;">
+						<p>
+							<strong>✅ Validation passed</strong>
+						</p>
+					</div>
+
+					<h4 style="margin-top:24px; margin-bottom:12px; font-size:16px; font-weight:600;">Basics</h4>
+					<table class="azure-table">
+						<tr>
+							<td style="width: 200px;">
+								<strong>Subscription</strong>
+							</td>
+							<td>Azure for Students</td>
+						</tr>
+						<tr>
+							<td>
+								<strong>Resource group</strong>
+							</td>
+							<td>@NewResourceGroup.Name</td>
+						</tr>
+						<tr>
+							<td>
+								<strong>Region</strong>
+							</td>
+							<td>@NewResourceGroup.Location</td>
+						</tr>
+					</table>
+
+					@if (Tags.Any(t => !string.IsNullOrWhiteSpace(t.Key)))
+					{
+						<h4 style="margin-top:24px; margin-bottom:12px; font-size:16px; font-weight:600;">Tags</h4>
+						<table class="azure-table">
+							@foreach (var tag in Tags.Where(t => !string.IsNullOrWhiteSpace(t.Key)))
+							{
+								<tr>
+									<td style="width: 200px;">
+										<strong>@tag.Key</strong>
+									</td>
+									<td>@tag.Value</td>
+								</tr>
+							}
+						</table>
+					}
+
+					<div class="azure-info-box" style="margin-top: 24px;">
+						<p><strong>Estimated cost:</strong> Resource groups are free. You only pay for the resources you deploy within them.</p>
+					</div>
+
+					<div class="azure-info-box" style="margin-top: 16px;">
+						<p><strong>Training Environment:</strong> This is a simulated resource group. No actual Azure resources or costs will be incurred.</p>
+					</div>
+
+					<h4 style="margin-top:32px; margin-bottom:12px; font-size:16px; font-weight:600;">Terms and conditions</h4>
+					<p style="font-size:14px; color:#605e5c;">
+						By clicking "Create", I (a) agree to the legal terms and privacy statement(s) associated with the Marketplace offering(s) listed above;
+						(b) authorize Microsoft to bill my current payment method for the fees associated with the offering(s), with the same billing frequency
+						as my Azure subscription; and (c) agree that Microsoft may share my contact, usage and transactional information with the provider(s)
+						of the offering(s) for support, billing and other transactional activities. Microsoft does not provide rights for third-party offerings.
+						See Azure Marketplace Terms for additional details.
+					</p>
+				</div>
+			}
+		</div>
+
+		<div class="azure-wizard-footer">
+			<div>
+				@if (CurrentTab > 0)
+				{
+					<button class="azure-button azure-button-secondary" @onclick="PreviousTab">
+						← Previous
+					</button>
+				}
+			</div>
+			<div style="display: flex; gap: 12px;">
+				<button class="azure-button azure-button-secondary" @onclick='() => Navigation.NavigateTo("/resource-groups")'>
+					Cancel
+				</button>
+				@if (CurrentTab < 2)
+				{
+					<button class="azure-button azure-button-primary" @onclick="NextTab">
+						Next: @GetNextTabName() →
+					</button>
+				}
+				else
+				{
+					<button class="azure-button azure-button-primary" @onclick="CreateResourceGroupAsync" disabled="@IsCreating">
+						@(IsCreating ? "Creating..." : "Create")
+					</button>
+				}
+			</div>
+		</div>
+	</div>
+</div>
+
+@code {
+	[Inject] private NavigationManager Navigation { get; set; } = default!;
+
+	[Inject] private AzureResourceService ResourceService { get; set; } = default!;
+
+	private ResourceGroup NewResourceGroup { get; set; } = new();
+	private List<TagPair> Tags { get; set; } = new();
+	private int CurrentTab { get; set; } = 0;
+	private bool IsCreating { get; set; } = false;
+	private string ErrorMessage { get; set; } = string.Empty;
+	private List<string> Locations { get; set; } = new();
+
+	protected override void OnInitialized()
+	{
+		Locations = ResourceService.GetLocations();
+	}
+
+	private string GetNextTabName()
+	{
+		return CurrentTab switch
+		{
+			0 => "Tags",
+			1 => "Review + create",
+			_ => ""
+		};
+	}
+
+	private void NextTab()
+	{
+		if (CurrentTab == 0 && !ValidateBasics())
+			return;
+
+		if (CurrentTab < 2)
+			CurrentTab++;
+	}
+
+	private void PreviousTab()
+	{
+		if (CurrentTab > 0)
+			CurrentTab--;
+	}
+
+	private bool ValidateBasics()
+	{
+		ErrorMessage = string.Empty;
+
+		if (string.IsNullOrWhiteSpace(NewResourceGroup.Name))
+		{
+			ErrorMessage = "Resource group name is required";
+			return false;
+		}
+
+		if (!System.Text.RegularExpressions.Regex.IsMatch(NewResourceGroup.Name, @"^[\w\-\.\(\)]+$"))
+		{
+			ErrorMessage = "Resource group name can only include alphanumeric, underscore, parentheses, hyphen, and period";
+			return false;
+		}
+
+		if (NewResourceGroup.Name.EndsWith('.'))
+		{
+			ErrorMessage = "Resource group name cannot end with a period";
+			return false;
+		}
+
+		if (ResourceService.ResourceGroupExists(NewResourceGroup.Name))
+		{
+			ErrorMessage = "A resource group with this name already exists";
+			return false;
+		}
+
+		if (string.IsNullOrWhiteSpace(NewResourceGroup.Location))
+		{
+			ErrorMessage = "Region is required";
+			return false;
+		}
+
+		return true;
+	}
+
+	private void AddTag()
+	{
+		Tags.Add(new TagPair { Key = "", Value = "" });
+	}
+
+	private void RemoveTag(int index)
+	{
+		if (index >= 0 && index < Tags.Count)
+		{
+			Tags.RemoveAt(index);
+		}
+	}
+
+	private void AddPredefinedTag(string key, string value)
+	{
+		if (!Tags.Any(t => t.Key.Equals(key, StringComparison.OrdinalIgnoreCase)))
+		{
+			Tags.Add(new TagPair { Key = key, Value = value });
+		}
+	}
+
+	private async Task CreateResourceGroupAsync()
+	{
+		if (!ValidateBasics())
+		{
+			CurrentTab = 0;
+			return;
+		}
+
+		IsCreating = true;
+
+		// Simulate deployment delay
+		await Task.Delay(1000);
+
+		// Create the resource group
+		ResourceService.CreateResourceGroup(NewResourceGroup);
+
+		Navigation.NavigateTo("/resource-groups");
+	}
+
+	private class TagPair
+	{
+		public string Key { get; set; } = string.Empty;
+		public string Value { get; set; } = string.Empty;
+	}
+
+}

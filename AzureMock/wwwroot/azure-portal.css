@@ -198,7 +198,7 @@ body {
 .azure-wizard-tab {
     padding: 16px 0;
     font-weight: 600;
-    color: #605e5c;
+    color: #605e55c;
     border-bottom: 2px solid transparent;
     cursor: pointer;
     transition: color 0.2s, border-color 0.2s;
@@ -234,6 +234,30 @@ body {
     margin-bottom: 6px;
     font-size: 14px;
     color: var(--azure-dark-gray);
+}
+
+/* Checkbox and Radio button alignment */
+.azure-form-group label input[type="checkbox"],
+.azure-form-group label input[type="radio"] {
+    width: auto;
+    margin-right: 8px;
+    vertical-align: middle;
+    position: relative;
+    top: -1px;
+}
+
+.azure-form-group label:has(input[type="checkbox"]),
+.azure-form-group label:has(input[type="radio"]) {
+    display: flex;
+    align-items: flex-start;
+    font-weight: 400;
+    cursor: pointer;
+}
+
+.azure-form-group label:has(input[type="checkbox"]) input,
+.azure-form-group label:has(input[type="radio"]) input {
+    margin-top: 2px;
+    flex-shrink: 0;
 }
 
 .azure-form-group input,
