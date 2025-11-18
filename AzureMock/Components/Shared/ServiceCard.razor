@@ -1,0 +1,33 @@
+@namespace AzureMock.Components.Shared
+
+<a class="azure-card azure-service-card" style="display:flex; flex-direction:column; align-items:center; width:@Width; text-align:center;" href="@Href">
+    <SvgIcon Icon="@Icon" Size="@IconSize" Animated="@Animated" />
+    <div class="service-card-title">@Title</div>
+    @if (!string.IsNullOrEmpty(Description))
+    {
+        <div class="service-card-description">@Description</div>
+    }
+</a>
+
+@code {
+    [Parameter]
+    public IconType Icon { get; set; } = IconType.CreateResource;
+
+    [Parameter]
+    public string Title { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Description { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Href { get; set; } = "#";
+
+    [Parameter]
+    public string Width { get; set; } = "120px";
+
+    [Parameter]
+    public string IconSize { get; set; } = "48";
+
+    [Parameter]
+    public bool Animated { get; set; } = false;
+}

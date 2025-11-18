@@ -1,0 +1,179 @@
+@page "/sql-servers/{ServerName}"
+@layout AzurePortalLayout
+@rendermode InteractiveServer
+
+<PageTitle>@ServerName - SQL Server - Microsoft Azure</PageTitle>
+
+<div class="azure-container">
+    @if (Server != null)
+    {
+        <div class="azure-breadcrumb">
+            <a href="/">Home</a>
+            <span>/</span>
+            <a href="/sql-servers">SQL Servers</a>
+            <span>/</span>
+            <span>@Server.Name</span>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <h1 class="azure-page-title" style="margin: 0;">@Server.Name</h1>
+            <div style="display: flex; gap: 12px;">
+                <button class="azure-button azure-button-primary" @onclick='() => Navigation.NavigateTo($"/sql-servers/{ServerName}/create-database")'>
+                    + Create Database
+                </button>
+                <button class="azure-button azure-button-secondary" @onclick="DeleteServer">
+                    Delete Server
+                </button>
+            </div>
+        </div>
+
+        <div class="azure-wizard">
+            <div class="azure-wizard-content">
+                <div class="azure-form-section">
+                    <h3>Overview</h3>
+                    <table class="azure-table">
+                        <tr>
+                            <td style="width: 200px;"><strong>Resource Group</strong></td>
+                            <td>@Server.ResourceGroup</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Status</strong></td>
+                            <td><span class="azure-badge azure-badge-running">@Server.Status</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Location</strong></td>
+                            <td>@Server.Location</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Server Name</strong></td>
+                            <td>@(Server.Name).database.windows.net</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Server Admin</strong></td>
+                            <td>@Server.AdminUsername</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Version</strong></td>
+                            <td>@Server.Version</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Created</strong></td>
+                            <td>@Server.CreatedDate.ToString("MMM dd, yyyy HH:mm")</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="azure-form-section">
+                    <h3>Connection Strings</h3>
+                    <div class="azure-info-box">
+                        <p><strong>ADO.NET:</strong></p>
+                        <code style="font-size: 12px; display: block; margin-top: 8px;">
+                            Server=tcp:@(Server.Name).database.windows.net,1433;Initial Catalog=@("{your_database}");Persist Security Info=False;User ID=@(Server.AdminUsername);Password=@("{your_password}");MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;
+                        </code>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="azure-resources" style="margin-top: 24px;">
+            <div class="azure-resources-header">
+                <h3>Databases (@Server.Databases.Count)</h3>
+                <button class="azure-button azure-button-primary" @onclick='() => Navigation.NavigateTo($"/sql-servers/{ServerName}/create-database")'>
+                    + Create Database
+                </button>
+            </div>
+
+            @if (Server.Databases.Any())
+            {
+                <table class="azure-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Pricing Tier</th>
+                            <th>Status</th>
+                            <th>Size</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var db in Server.Databases)
+                        {
+                            <tr>
+                                <td>
+                                    <a href="/sql-servers/@ServerName/databases/@db.Name" class="azure-action-link">@db.Name</a>
+                                </td>
+                                <td>@db.PricingTier</td>
+                                <td><span class="azure-badge azure-badge-online">@db.Status</span></td>
+                                <td>@db.MaxSizeGB GB</td>
+                                <td>@db.CreatedDate.ToString("MMM dd, yyyy HH:mm")</td>
+                                <td>
+                                    <button class="azure-link-button" @onclick='() => DeleteDatabase(db.Name)'>
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="azure-empty-state">
+                    <p>No databases created yet. Create your first database to get started!</p>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="azure-empty-state">
+            <h3>SQL Server Not Found</h3>
+            <p>The SQL Server '@ServerName' does not exist.</p>
+            <button class="azure-button azure-button-primary" @onclick='() => Navigation.NavigateTo("/sql-servers")' style="margin-top: 16px;">
+                Back to SQL Servers
+            </button>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string ServerName { get; set; } = string.Empty;
+
+    [Inject]
+    private NavigationManager Navigation { get; set; } = default!;
+
+    [Inject]
+    private AzureResourceService ResourceService { get; set; } = default!;
+
+    private SqlServer? Server { get; set; }
+
+    protected override void OnInitialized()
+    {
+        LoadServer();
+    }
+
+    protected override void OnParametersSet()
+    {
+        LoadServer();
+    }
+
+    private void LoadServer()
+    {
+        Server = ResourceService.GetSqlServer(ServerName);
+    }
+
+    private void DeleteServer()
+    {
+        ResourceService.DeleteSqlServer(ServerName);
+        Navigation.NavigateTo("/sql-servers");
+    }
+
+    private void DeleteDatabase(string databaseName)
+    {
+        ResourceService.DeleteDatabase(ServerName, databaseName);
+        LoadServer();
+        StateHasChanged();
+    }
+}

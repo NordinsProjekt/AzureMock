@@ -1,0 +1,110 @@
+@page "/sql-servers"
+@layout AzurePortalLayout
+@rendermode InteractiveServer
+
+<PageTitle>SQL Servers - Microsoft Azure</PageTitle>
+
+<div class="azure-container">
+    <div class="azure-breadcrumb">
+        <a href="/">Home</a>
+        <span>/</span>
+        <span>SQL Servers</span>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <h1 class="azure-page-title" style="margin: 0;">SQL Servers</h1>
+        <button class="azure-button azure-button-primary" @onclick='() => Navigation.NavigateTo("/create-sql-server")'>
+            + Create SQL Server
+        </button>
+    </div>
+
+    <div class="azure-resources">
+        @if (SqlServersList.Any())
+        {
+            <table class="azure-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Resource Group</th>
+                        <th>Location</th>
+                        <th>Status</th>
+                        <th>Databases</th>
+                        <th>Version</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var server in SqlServersList)
+                    {
+                        <tr>
+                            <td>
+                                <a href="/sql-servers/@server.Name" class="azure-action-link">@server.Name</a>
+                            </td>
+                            <td>@server.ResourceGroup</td>
+                            <td>@server.Location</td>
+                            <td><span class="azure-badge azure-badge-running">@server.Status</span></td>
+                            <td>@server.Databases.Count</td>
+                            <td>@server.Version</td>
+                            <td>
+                                <button class="azure-link-button" @onclick='() => DeleteServer(server.Name)'>
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="azure-empty-state">
+                <svg viewBox="0 0 64 64" fill="currentColor">
+                    <rect x="12" y="20" width="40" height="10" rx="2"/>
+                    <rect x="12" y="32" width="40" height="10" rx="2"/>
+                    <rect x="12" y="44" width="40" height="10" rx="2"/>
+                </svg>
+                <h3>No SQL Servers</h3>
+                <p>Create your first SQL Server to get started with Azure SQL Database</p>
+                <button class="azure-button azure-button-primary" @onclick='() => Navigation.NavigateTo("/create-sql-server")' style="margin-top: 16px;">
+                    + Create SQL Server
+                </button>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Inject]
+    private NavigationManager Navigation { get; set; } = default!;
+
+    [Inject]
+    private AzureResourceService ResourceService { get; set; } = default!;
+
+    private List<SqlServer> SqlServersList { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        LoadServers();
+    }
+
+    private void LoadServers()
+    {
+        SqlServersList = ResourceService.GetSqlServers();
+    }
+
+    private void DeleteServer(string serverName)
+    {
+        if (confirm($"Are you sure you want to delete the SQL Server '{serverName}'? This will also delete all databases on this server."))
+        {
+            ResourceService.DeleteSqlServer(serverName);
+            LoadServers();
+        }
+    }
+
+    private bool confirm(string message)
+    {
+        // In a real application, you'd use a proper dialog component
+        // For simplicity, we'll just return true here
+        return true;
+    }
+}

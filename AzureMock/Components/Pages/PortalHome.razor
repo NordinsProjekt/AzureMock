@@ -1,0 +1,145 @@
+@page "/"
+@layout AzurePortalLayout
+@rendermode InteractiveServer
+
+<PageTitle>Home - Microsoft Azure</PageTitle>
+
+<div class="azure-container">
+    <h1 class="azure-page-title">Azure services</h1>
+
+    <div style="display:flex; gap:20px; flex-wrap:wrap; align-items:stretch;">
+        <a class="azure-card" style="display:flex; flex-direction:column; align-items:center; width:120px; height:120px; text-align:center; justify-content:center;" href="/create-resource">
+            <SvgIcon Icon="IconType.CreateResource" Size="48" />
+            <div style="margin-top:8px; font-weight:600; font-size:12px;">Create a resource</div>
+        </a>
+
+        <a class="azure-card" style="display:flex; flex-direction:column; align-items:center; width:120px; height:120px; text-align:center; justify-content:center;" href="#">
+            <SvgIcon Icon="IconType.ApplicationInsights" Size="48" />
+            <div style="margin-top:8px; font-size:12px;">Application Insights</div>
+        </a>
+
+        <a class="azure-card" style="display:flex; flex-direction:column; align-items:center; width:120px; height:120px; text-align:center; justify-content:center;" href="#">
+            <SvgIcon Icon="IconType.Subscriptions" Size="48" />
+            <div style="margin-top:8px; font-size:12px;">Subscriptions</div>
+        </a>
+
+        <a class="azure-card" style="display:flex; flex-direction:column; align-items:center; width:120px; height:120px; text-align:center; justify-content:center;" href="#">
+            <SvgIcon Icon="IconType.AppService" Size="48" />
+            <div style="margin-top:8px; font-size:12px;">App Services</div>
+        </a>
+
+        <a class="azure-card" style="display:flex; flex-direction:column; align-items:center; width:120px; height:120px; text-align:center; justify-content:center;" href="#">
+            <SvgIcon Icon="IconType.CostManagement" Size="48" />
+            <div style="margin-top:8px; font-size:12px;">Cost Management</div>
+        </a>
+
+        <a class="azure-card" style="display:flex; flex-direction:column; align-items:center; width:120px; height:120px; text-align:center; justify-content:center;" href="#">
+            <SvgIcon Icon="IconType.Credits" Size="48" />
+            <div style="margin-top:8px; font-size:12px;">Credits</div>
+        </a>
+
+        <a class="azure-card" style="display:flex; flex-direction:column; align-items:center; width:120px; height:120px; text-align:center; justify-content:center;" href="#">
+            <SvgIcon Icon="IconType.Network" Size="48" />
+            <div style="margin-top:8px; font-size:12px;">Network</div>
+        </a>
+
+        <a class="azure-card" style="display:flex; flex-direction:column; align-items:center; width:120px; height:120px; text-align:center; justify-content:center;" href="#">
+            <SvgIcon Icon="IconType.AzureOpenAI" Size="48" />
+            <div style="margin-top:8px; font-size:12px;">Azure OpenAI</div>
+        </a>
+
+        <a class="azure-card" style="display:flex; flex-direction:column; align-items:center; width:120px; height:120px; text-align:center; justify-content:center;" href="#">
+            <SvgIcon Icon="IconType.EntraId" Size="48" />
+            <div style="margin-top:8px; font-size:12px;">Entra ID</div>
+        </a>
+    </div>
+
+    <h2 style="margin-top:32px;">Resources</h2>
+
+    <div class="azure-resources">
+        <div class="azure-resources-header">
+            <h3>Recent</h3>
+            <div style="display:flex; gap:12px;">
+                <button class="azure-button azure-button-secondary" @onclick='() => Navigation.NavigateTo("/all-resources")'>
+                    See all
+                </button>
+            </div>
+        </div>
+
+        @if (RecentResources.Any())
+        {
+            <table class="azure-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Resource Group</th>
+                        <th>Location</th>
+                        <th>Last Modified</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var server in RecentResources)
+                    {
+                        <tr style="cursor: pointer;" @onclick='() => Navigation.NavigateTo($"/sql-servers/{server.Name}")'>
+                            <td>@server.Name</td>
+                            <td>SQL server</td>
+                            <td>@server.ResourceGroup</td>
+                            <td>@server.Location</td>
+                            <td>@server.CreatedDate.ToString("g")</td>
+                        </tr>
+                        @foreach(var db in server.Databases.OrderByDescending(d=>d.CreatedDate))
+                        {
+                            <tr style="cursor: pointer;" @onclick='() => Navigation.NavigateTo($"/sql-servers/{server.Name}/databases/{db.Name}")'>
+                                <td style="padding-left:24px;">@db.Name</td>
+                                <td>SQL database</td>
+                                <td>@server.ResourceGroup</td>
+                                <td>@server.Location</td>
+                                <td>@db.CreatedDate.ToString("g")</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="azure-empty-state">
+                <SvgIcon Icon="IconType.Empty" Size="64" />
+                <p>No recent resources. Use "Create a resource" to add resources.</p>
+            </div>
+        }
+    </div>
+
+    <div style="margin-top:32px; display:flex; gap:24px; flex-wrap:wrap;">
+        <a class="azure-card" style="width:160px; height:140px; text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center;" href="/resource-groups">
+            <SvgIcon Icon="IconType.ResourceGroups" Size="48" />
+            <div style="margin-top:8px; font-weight:600; font-size:14px;">Resource groups</div>
+        </a>
+
+        <a class="azure-card" style="width:160px; height:140px; text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center;" href="/all-resources">
+            <SvgIcon Icon="IconType.AllResources" Size="48" />
+            <div style="margin-top:8px; font-weight:600; font-size:14px;">All resources</div>
+        </a>
+
+        <a class="azure-card" style="width:160px; height:140px; text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center;" href="#">
+            <SvgIcon Icon="IconType.Dashboard" Size="48" />
+            <div style="margin-top:8px; font-weight:600; font-size:14px;">Dashboard</div>
+        </a>
+    </div>
+</div>
+
+@code {
+    [Inject]
+    private NavigationManager Navigation { get; set; } = default!;
+
+    [Inject]
+    private AzureResourceService ResourceService { get; set; } = default!;
+
+    private List<SqlServer> RecentResources { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        RecentResources = ResourceService.GetSqlServers().OrderByDescending(s => s.CreatedDate).Take(10).ToList();
+    }
+}

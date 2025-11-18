@@ -1,0 +1,396 @@
+@page "/create-sql-server"
+@layout AzurePortalLayout
+@rendermode InteractiveServer
+@using System.ComponentModel.DataAnnotations
+
+<PageTitle>Create SQL Server - Microsoft Azure</PageTitle>
+
+<div class="azure-container">
+    <div class="azure-breadcrumb">
+        <a href="/">Home</a>
+        <span>/</span>
+        <a href="/sql-servers">SQL Servers</a>
+        <span>/</span>
+        <span>Create SQL Server</span>
+    </div>
+
+    <div class="azure-wizard">
+        <div class="azure-wizard-header">
+            <h2>Create SQL Server</h2>
+            <p>Set up a new Azure SQL Server instance</p>
+        </div>
+
+        <div class="azure-wizard-tabs">
+            <div class="azure-wizard-tab @(CurrentTab == 0 ? "active" : "")" @onclick='() => CurrentTab = 0'>
+                Basics
+            </div>
+            <div class="azure-wizard-tab @(CurrentTab == 1 ? "active" : "")" @onclick='() => CurrentTab = 1'>
+                Networking
+            </div>
+            <div class="azure-wizard-tab @(CurrentTab == 2 ? "active" : "")" @onclick='() => CurrentTab = 2'>
+                Security
+            </div>
+            <div class="azure-wizard-tab @(CurrentTab == 3 ? "active" : "")" @onclick='() => CurrentTab = 3'>
+                Review + Create
+            </div>
+        </div>
+
+        <div class="azure-wizard-content">
+            @if (CurrentTab == 0)
+            {
+                <div class="azure-form-section">
+                    <h3>Project Details</h3>
+                    
+                    <div class="azure-form-group">
+                        <label>Resource Group *</label>
+                        <select @bind="NewServer.ResourceGroup">
+                            <option value="">Select a resource group</option>
+                            @foreach (var rg in ResourceGroups)
+                            {
+                                <option value="@rg.Name">@rg.Name</option>
+                            }
+                        </select>
+                        <small>Or <a href="#" @onclick="ShowCreateResourceGroup" @onclick:preventDefault>create new</a></small>
+                    </div>
+
+                    @if (ShowNewResourceGroup)
+                    {
+                        <div class="azure-form-group">
+                            <label>New Resource Group Name *</label>
+                            <input type="text" @bind="NewResourceGroupName" placeholder="e.g., myResourceGroup" />
+                        </div>
+                    }
+                </div>
+
+                <div class="azure-form-section">
+                    <h3>Server Details</h3>
+                    
+                    <div class="azure-form-group">
+                        <label>Server Name *</label>
+                        <input type="text" @bind="NewServer.Name" placeholder="e.g., mysqlserver" />
+                        <small>Server name must be globally unique. Only lowercase letters, numbers, and hyphens allowed.</small>
+                        @if (!string.IsNullOrEmpty(ServerNameError))
+                        {
+                            <div class="error">@ServerNameError</div>
+                        }
+                    </div>
+
+                    <div class="azure-form-group">
+                        <label>Location *</label>
+                        <select @bind="NewServer.Location">
+                            <option value="">Select a location</option>
+                            @foreach (var location in Locations)
+                            {
+                                <option value="@location">@location</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="azure-form-group">
+                        <label>SQL Server Version</label>
+                        <select @bind="NewServer.Version">
+                            <option value="12.0">12.0 (Latest)</option>
+                            <option value="11.0">11.0</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="azure-form-section">
+                    <h3>Authentication</h3>
+                    
+                    <div class="azure-form-group">
+                        <label>Admin Username *</label>
+                        <input type="text" @bind="NewServer.AdminUsername" placeholder="e.g., sqladmin" />
+                        <small>Username cannot be 'admin', 'administrator', 'sa', 'root', 'dbmanager', 'loginmanager', etc.</small>
+                    </div>
+
+                    <div class="azure-form-group">
+                        <label>Password *</label>
+                        <input type="password" @bind="NewServer.AdminPassword" placeholder="Enter password" />
+                        <small>Password must be at least 8 characters with uppercase, lowercase, numbers, and special characters.</small>
+                    </div>
+
+                    <div class="azure-form-group">
+                        <label>Confirm Password *</label>
+                        <input type="password" @bind="ConfirmPassword" placeholder="Confirm password" />
+                        @if (!string.IsNullOrEmpty(PasswordError))
+                        {
+                            <div class="error">@PasswordError</div>
+                        }
+                    </div>
+                </div>
+            }
+            else if (CurrentTab == 1)
+            {
+                <div class="azure-form-section">
+                    <h3>Connectivity Method</h3>
+                    <div class="azure-info-box">
+                        <p>Configure network connectivity for your SQL Server. In this training environment, all settings are simulated.</p>
+                    </div>
+                    
+                    <div class="azure-form-group">
+                        <label>
+                            <input type="radio" name="connectivity" checked /> Public endpoint (recommended for training)
+                        </label>
+                    </div>
+                    
+                    <div class="azure-form-group">
+                        <label>
+                            <input type="radio" name="connectivity" /> Private endpoint
+                        </label>
+                    </div>
+                </div>
+
+                <div class="azure-form-section">
+                    <h3>Firewall Rules</h3>
+                    <div class="azure-form-group">
+                        <label>
+                            <input type="checkbox" checked /> Allow Azure services to access this server
+                        </label>
+                    </div>
+                    
+                    <div class="azure-form-group">
+                        <label>
+                            <input type="checkbox" checked /> Add current client IP address
+                        </label>
+                        <small>Current IP: 192.168.1.100 (simulated)</small>
+                    </div>
+                </div>
+            }
+            else if (CurrentTab == 2)
+            {
+                <div class="azure-form-section">
+                    <h3>Security Options</h3>
+                    <div class="azure-info-box">
+                        <p>Security features in this training environment are simulated for learning purposes.</p>
+                    </div>
+                    
+                    <div class="azure-form-group">
+                        <label>
+                            <input type="checkbox" checked /> Enable Microsoft Defender for SQL
+                        </label>
+                        <small>Provides advanced threat protection and vulnerability assessment</small>
+                    </div>
+                    
+                    <div class="azure-form-group">
+                        <label>
+                            <input type="checkbox" /> Enable Transparent Data Encryption (TDE)
+                        </label>
+                        <small>Encrypts data at rest</small>
+                    </div>
+
+                    <div class="azure-form-group">
+                        <label>
+                            <input type="checkbox" checked /> Enable auditing
+                        </label>
+                        <small>Tracks database events and writes them to audit logs</small>
+                    </div>
+                </div>
+            }
+            else if (CurrentTab == 3)
+            {
+                <div class="azure-form-section">
+                    <h3>Review Your Configuration</h3>
+                    
+                    <table class="azure-table">
+                        <tr>
+                            <td><strong>Server Name</strong></td>
+                            <td>@NewServer.Name</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Resource Group</strong></td>
+                            <td>@(ShowNewResourceGroup ? NewResourceGroupName : NewServer.ResourceGroup)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Location</strong></td>
+                            <td>@NewServer.Location</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Version</strong></td>
+                            <td>@NewServer.Version</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Admin Username</strong></td>
+                            <td>@NewServer.AdminUsername</td>
+                        </tr>
+                    </table>
+
+                    <div class="azure-info-box" style="margin-top: 24px;">
+                        <p><strong>?? Estimated Cost:</strong> $0.00 (Training Environment - No actual costs)</p>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="azure-wizard-footer">
+            <div>
+                @if (CurrentTab > 0)
+                {
+                    <button class="azure-button azure-button-secondary" @onclick="PreviousTab">
+                        ? Previous
+                    </button>
+                }
+            </div>
+            <div style="display: flex; gap: 12px;">
+                <button class="azure-button azure-button-secondary" @onclick='() => Navigation.NavigateTo("/sql-servers")'>
+                    Cancel
+                </button>
+                @if (CurrentTab < 3)
+                {
+                    <button class="azure-button azure-button-primary" @onclick="NextTab">
+                        Next: @GetNextTabName() ?
+                    </button>
+                }
+                else
+                {
+                    <button class="azure-button azure-button-primary" @onclick="CreateServer" disabled="@IsCreating">
+                        @(IsCreating ? "Creating..." : "Create")
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Inject]
+    private NavigationManager Navigation { get; set; } = default!;
+
+    [Inject]
+    private AzureResourceService ResourceService { get; set; } = default!;
+
+    private SqlServer NewServer { get; set; } = new();
+    private string ConfirmPassword { get; set; } = string.Empty;
+    private string NewResourceGroupName { get; set; } = string.Empty;
+    private bool ShowNewResourceGroup { get; set; } = false;
+    private int CurrentTab { get; set; } = 0;
+    private bool IsCreating { get; set; } = false;
+    private string ServerNameError { get; set; } = string.Empty;
+    private string PasswordError { get; set; } = string.Empty;
+
+    private List<ResourceGroup> ResourceGroups { get; set; } = new();
+    private List<string> Locations { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        ResourceGroups = ResourceService.GetResourceGroups();
+        Locations = ResourceService.GetLocations();
+    }
+
+    private void ShowCreateResourceGroup(MouseEventArgs e)
+    {
+        ShowNewResourceGroup = !ShowNewResourceGroup;
+    }
+
+    private string GetNextTabName()
+    {
+        return CurrentTab switch
+        {
+            0 => "Networking",
+            1 => "Security",
+            2 => "Review + Create",
+            _ => ""
+        };
+    }
+
+    private void NextTab()
+    {
+        if (CurrentTab == 0 && !ValidateBasics())
+            return;
+
+        if (CurrentTab < 3)
+            CurrentTab++;
+    }
+
+    private void PreviousTab()
+    {
+        if (CurrentTab > 0)
+            CurrentTab--;
+    }
+
+    private bool ValidateBasics()
+    {
+        ServerNameError = string.Empty;
+        PasswordError = string.Empty;
+
+        if (string.IsNullOrWhiteSpace(NewServer.Name))
+        {
+            ServerNameError = "Server name is required";
+            return false;
+        }
+
+        if (!System.Text.RegularExpressions.Regex.IsMatch(NewServer.Name, "^[a-z0-9-]+$"))
+        {
+            ServerNameError = "Server name must contain only lowercase letters, numbers, and hyphens";
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(NewServer.ResourceGroup) && !ShowNewResourceGroup)
+        {
+            ServerNameError = "Resource group is required";
+            return false;
+        }
+
+        if (ShowNewResourceGroup && string.IsNullOrWhiteSpace(NewResourceGroupName))
+        {
+            ServerNameError = "Resource group name is required";
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(NewServer.Location))
+        {
+            ServerNameError = "Location is required";
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(NewServer.AdminUsername))
+        {
+            PasswordError = "Admin username is required";
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(NewServer.AdminPassword))
+        {
+            PasswordError = "Password is required";
+            return false;
+        }
+
+        if (NewServer.AdminPassword != ConfirmPassword)
+        {
+            PasswordError = "Passwords do not match";
+            return false;
+        }
+
+        return true;
+    }
+
+    private async Task CreateServer()
+    {
+        if (!ValidateBasics())
+        {
+            CurrentTab = 0;
+            return;
+        }
+
+        IsCreating = true;
+        
+        // Simulate deployment delay
+        await Task.Delay(2000);
+
+        // Create resource group if needed
+        if (ShowNewResourceGroup)
+        {
+            ResourceService.CreateResourceGroup(new ResourceGroup
+            {
+                Name = NewResourceGroupName,
+                Location = NewServer.Location
+            });
+            NewServer.ResourceGroup = NewResourceGroupName;
+        }
+
+        // Create the SQL Server
+        ResourceService.CreateSqlServer(NewServer);
+
+        Navigation.NavigateTo($"/sql-servers/{NewServer.Name}");
+    }
+}

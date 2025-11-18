@@ -1,0 +1,556 @@
+@page "/sql-servers/{ServerName}/create-database"
+@layout AzurePortalLayout
+@rendermode InteractiveServer
+
+<PageTitle>Create Database - Microsoft Azure</PageTitle>
+
+<div class="azure-container">
+    <div class="azure-breadcrumb">
+        <a href="/">Home</a>
+        <span>/</span>
+        <a href="/sql-servers">SQL Servers</a>
+        <span>/</span>
+        <a href="/sql-servers/@ServerName">@ServerName</a>
+        <span>/</span>
+        <span>Create Database</span>
+    </div>
+
+    <div class="azure-wizard">
+        <div class="azure-wizard-header">
+            <h2>Create SQL Database</h2>
+            <p>Create a new database on @ServerName</p>
+        </div>
+
+        <div class="azure-wizard-tabs">
+            <div class="azure-wizard-tab @(CurrentTab == 0 ? "active" : "")" @onclick='() => CurrentTab = 0'>
+                Basics
+            </div>
+            <div class="azure-wizard-tab @(CurrentTab == 1 ? "active" : "")" @onclick='() => CurrentTab = 1'>
+                Networking
+            </div>
+            <div class="azure-wizard-tab @(CurrentTab == 2 ? "active" : "")" @onclick='() => CurrentTab = 2'>
+                Security
+            </div>
+            <div class="azure-wizard-tab @(CurrentTab == 3 ? "active" : "")" @onclick='() => CurrentTab = 3'>
+                Additional settings
+            </div>
+            <div class="azure-wizard-tab @(CurrentTab == 4 ? "active" : "")" @onclick='() => CurrentTab = 4'>
+                Tags
+            </div>
+            <div class="azure-wizard-tab @(CurrentTab == 5 ? "active" : "")" @onclick='() => CurrentTab = 5'>
+                Review + Create
+            </div>
+        </div>
+
+        <div class="azure-wizard-content">
+            @if (CurrentTab == 0)
+            {
+                <div class="azure-form-section">
+                    <h3>Project Details</h3>
+                    
+                    <div class="azure-form-group">
+                        <label>Server *</label>
+                        <input type="text" value="@ServerName" disabled />
+                        <small>The SQL Server where this database will be created</small>
+                    </div>
+                </div>
+
+                <div class="azure-form-section">
+                    <h3>Database Details</h3>
+                    
+                    <div class="azure-form-group">
+                        <label>Database Name *</label>
+                        <input type="text" @bind="NewDatabase.Name" placeholder="e.g., mydatabase" />
+                        <small>Database name must be unique on this server</small>
+                        @if (!string.IsNullOrEmpty(ErrorMessage))
+                        {
+                            <div class="error">@ErrorMessage</div>
+                        }
+                    </div>
+
+                    <div class="azure-form-group">
+                        <label>Want to use SQL elastic pool?</label>
+                        <select>
+                            <option value="no" selected>No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                        <small>Elastic pools enable you to share resources among multiple databases</small>
+                    </div>
+                </div>
+
+                <div class="azure-form-section">
+                    <h3>Compute + Storage</h3>
+                    
+                    <div class="azure-form-group">
+                        <label>Pricing Tier *</label>
+                        <select @bind="NewDatabase.PricingTier">
+                            <option value="Basic">Basic - For simple applications (5 DTUs, 2GB)</option>
+                            <option value="Standard S0">Standard S0 - Balanced (10 DTUs, 250GB)</option>
+                            <option value="Standard S1">Standard S1 - General workloads (20 DTUs, 250GB)</option>
+                            <option value="Standard S2">Standard S2 - Most applications (50 DTUs, 250GB)</option>
+                            <option value="Premium P1">Premium P1 - Business critical (125 DTUs, 500GB)</option>
+                            <option value="Premium P2">Premium P2 - High performance (250 DTUs, 500GB)</option>
+                        </select>
+                    </div>
+
+                    <div class="azure-form-group">
+                        <label>Compute Tier</label>
+                        <select @bind="NewDatabase.ComputeTier">
+                            <option value="Provisioned">Provisioned</option>
+                            <option value="Serverless">Serverless</option>
+                        </select>
+                        <small>Provisioned: Consistent performance. Serverless: Auto-scaling with per-second billing</small>
+                    </div>
+
+                    <div class="azure-form-group">
+                        <label>Maximum Data Size (GB) *</label>
+                        <input type="number" @bind="NewDatabase.MaxSizeGB" min="1" max="4096" />
+                        <small>Maximum size for the database</small>
+                    </div>
+                </div>
+
+                <div class="azure-form-section">
+                    <h3>Backup Storage Redundancy</h3>
+                    <div class="azure-info-box">
+                        <p>Configure how your backup data is replicated. In this training environment, all options are simulated.</p>
+                    </div>
+                    
+                    <div class="azure-form-group">
+                        <label>
+                            <input type="radio" name="redundancy" checked /> Locally-redundant backup storage
+                        </label>
+                        <small>Replicates data within a single datacenter (lowest cost)</small>
+                    </div>
+                    
+                    <div class="azure-form-group">
+                        <label>
+                            <input type="radio" name="redundancy" /> Zone-redundant backup storage
+                        </label>
+                        <small>Replicates data across availability zones</small>
+                    </div>
+                    
+                    <div class="azure-form-group">
+                        <label>
+                            <input type="radio" name="redundancy" /> Geo-redundant backup storage
+                        </label>
+                        <small>Replicates data to a secondary region (highest durability)</small>
+                    </div>
+                </div>
+            }
+            else if (CurrentTab == 1)
+            {
+                <div class="azure-form-section">
+                    <h3>Network Connectivity</h3>
+                    <div class="azure-info-box">
+                        <p>Configure network connectivity for your database. In this training environment, all settings are simulated.</p>
+                    </div>
+                    
+                    <div class="azure-form-group">
+                        <label>Connectivity method</label>
+                        <select>
+                            <option value="public" selected>Public endpoint (selected networks)</option>
+                            <option value="private">Private endpoint</option>
+                            <option value="none">No access</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="azure-form-section">
+                    <h3>Firewall Rules</h3>
+                    
+                    <div class="azure-form-group">
+                        <label>
+                            <input type="checkbox" checked /> Allow Azure services and resources to access this server
+                        </label>
+                        <small>Allows Azure services like App Service, Functions to connect</small>
+                    </div>
+                    
+                    <div class="azure-form-group">
+                        <label>
+                            <input type="checkbox" checked /> Add current client IP address
+                        </label>
+                        <small>Current IP: 192.168.1.100 (simulated)</small>
+                    </div>
+                </div>
+
+                <div class="azure-form-section">
+                    <h3>Connection Policy</h3>
+                    
+                    <div class="azure-form-group">
+                        <label>
+                            <input type="radio" name="connection" checked /> Default
+                        </label>
+                        <small>Recommended for most scenarios</small>
+                    </div>
+                    
+                    <div class="azure-form-group">
+                        <label>
+                            <input type="radio" name="connection" /> Proxy
+                        </label>
+                        <small>Route all connections through Azure gateway</small>
+                    </div>
+                    
+                    <div class="azure-form-group">
+                        <label>
+                            <input type="radio" name="connection" /> Redirect
+                        </label>
+                        <small>Direct connections for lower latency</small>
+                    </div>
+                </div>
+            }
+            else if (CurrentTab == 2)
+            {
+                <div class="azure-form-section">
+                    <h3>Data Protection</h3>
+                    <div class="azure-info-box">
+                        <p>Security features in this training environment are simulated for learning purposes.</p>
+                    </div>
+                    
+                    <div class="azure-form-group">
+                        <label>
+                            <input type="checkbox" checked /> Enable Microsoft Defender for SQL
+                        </label>
+                        <small>Provides advanced threat protection and vulnerability assessment</small>
+                    </div>
+                    
+                    <div class="azure-form-group">
+                        <label>
+                            <input type="checkbox" checked /> Enable Transparent Data Encryption (TDE)
+                        </label>
+                        <small>Encrypts data at rest</small>
+                    </div>
+                </div>
+
+                <div class="azure-form-section">
+                    <h3>Ledger</h3>
+                    
+                    <div class="azure-form-group">
+                        <label>
+                            <input type="checkbox" /> Enable ledger for this database
+                        </label>
+                        <small>Provides tamper-evidence capabilities for your data</small>
+                    </div>
+                </div>
+
+                <div class="azure-form-section">
+                    <h3>Identity</h3>
+                    
+                    <div class="azure-form-group">
+                        <label>
+                            <input type="checkbox" /> Enable Microsoft Entra authentication only
+                        </label>
+                        <small>Use Azure AD authentication instead of SQL authentication</small>
+                    </div>
+                    
+                    <div class="azure-form-group">
+                        <label>
+                            <input type="checkbox" /> Use managed identity
+                        </label>
+                        <small>Allow the database to authenticate to other Azure services</small>
+                    </div>
+                </div>
+            }
+            else if (CurrentTab == 3)
+            {
+                <div class="azure-form-section">
+                    <h3>Data Source</h3>
+                    
+                    <div class="azure-form-group">
+                        <label>Use existing data</label>
+                        <select>
+                            <option value="none" selected>None</option>
+                            <option value="backup">Backup</option>
+                            <option value="sample">Sample (AdventureWorksLT)</option>
+                        </select>
+                        <small>Start with sample data or restore from backup</small>
+                    </div>
+                </div>
+
+                <div class="azure-form-section">
+                    <h3>Database Collation</h3>
+                    
+                    <div class="azure-form-group">
+                        <label>Collation</label>
+                        <select @bind="NewDatabase.Collation">
+                            <option value="SQL_Latin1_General_CP1_CI_AS">SQL_Latin1_General_CP1_CI_AS (Default)</option>
+                            <option value="SQL_Latin1_General_CP1_CS_AS">SQL_Latin1_General_CP1_CS_AS</option>
+                            <option value="Latin1_General_CI_AS">Latin1_General_CI_AS</option>
+                            <option value="Latin1_General_CS_AS">Latin1_General_CS_AS</option>
+                        </select>
+                        <small>Collation determines how data is sorted and compared</small>
+                    </div>
+                </div>
+
+                <div class="azure-form-section">
+                    <h3>Maintenance Window</h3>
+                    
+                    <div class="azure-form-group">
+                        <label>
+                            <input type="radio" name="maintenance" checked /> System default (5pm to 8am local time)
+                        </label>
+                    </div>
+                    
+                    <div class="azure-form-group">
+                        <label>
+                            <input type="radio" name="maintenance" /> Weekday window
+                        </label>
+                    </div>
+                    
+                    <div class="azure-form-group">
+                        <label>
+                            <input type="radio" name="maintenance" /> Weekend window
+                        </label>
+                    </div>
+                </div>
+            }
+            else if (CurrentTab == 4)
+            {
+                <div class="azure-form-section">
+                    <h3>Tags</h3>
+                    <div class="azure-info-box">
+                        <p>Tags are name/value pairs that enable you to categorize resources and view consolidated billing by applying the same tag to multiple resources.</p>
+                    </div>
+                    
+                    <div class="azure-form-group">
+                        <label>Name</label>
+                        <input type="text" placeholder="e.g., Environment" />
+                    </div>
+                    
+                    <div class="azure-form-group">
+                        <label>Value</label>
+                        <input type="text" placeholder="e.g., Production" />
+                    </div>
+                    
+                    <button class="azure-button azure-button-secondary" style="margin-top:8px;">+ Add tag</button>
+                </div>
+
+                <div class="azure-form-section">
+                    <h3>Common Tags</h3>
+                    <p style="font-size:14px; color:#605e5c; margin-bottom:12px;">Select from commonly used tags:</p>
+                    
+                    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                        <button class="azure-button azure-button-secondary">Environment: Development</button>
+                        <button class="azure-button azure-button-secondary">Environment: Production</button>
+                        <button class="azure-button azure-button-secondary">Department: IT</button>
+                        <button class="azure-button azure-button-secondary">Cost Center</button>
+                        <button class="azure-button azure-button-secondary">Owner</button>
+                    </div>
+                </div>
+            }
+            else if (CurrentTab == 5)
+            {
+                <div class="azure-form-section">
+                    <h3>Review Your Configuration</h3>
+                    
+                    <h4 style="margin-top:24px; margin-bottom:12px; font-size:16px; font-weight:600;">Basics</h4>
+                    <table class="azure-table">
+                        <tr>
+                            <td style="width: 200px;"><strong>Server</strong></td>
+                            <td>@ServerName</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Database Name</strong></td>
+                            <td>@NewDatabase.Name</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Pricing Tier</strong></td>
+                            <td>@NewDatabase.PricingTier</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Compute Tier</strong></td>
+                            <td>@NewDatabase.ComputeTier</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Max Size</strong></td>
+                            <td>@NewDatabase.MaxSizeGB GB</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Backup Redundancy</strong></td>
+                            <td>Locally-redundant</td>
+                        </tr>
+                    </table>
+
+                    <h4 style="margin-top:24px; margin-bottom:12px; font-size:16px; font-weight:600;">Networking</h4>
+                    <table class="azure-table">
+                        <tr>
+                            <td style="width: 200px;"><strong>Connectivity</strong></td>
+                            <td>Public endpoint</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Firewall Rules</strong></td>
+                            <td>Allow Azure services, Current client IP</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Connection Policy</strong></td>
+                            <td>Default</td>
+                        </tr>
+                    </table>
+
+                    <h4 style="margin-top:24px; margin-bottom:12px; font-size:16px; font-weight:600;">Security</h4>
+                    <table class="azure-table">
+                        <tr>
+                            <td style="width: 200px;"><strong>Microsoft Defender</strong></td>
+                            <td>Enabled</td>
+                        </tr>
+                        <tr>
+                            <td><strong>TDE</strong></td>
+                            <td>Enabled</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ledger</strong></td>
+                            <td>Disabled</td>
+                        </tr>
+                    </table>
+
+                    <h4 style="margin-top:24px; margin-bottom:12px; font-size:16px; font-weight:600;">Additional Settings</h4>
+                    <table class="azure-table">
+                        <tr>
+                            <td style="width: 200px;"><strong>Data Source</strong></td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Collation</strong></td>
+                            <td>@NewDatabase.Collation</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Maintenance Window</strong></td>
+                            <td>System default</td>
+                        </tr>
+                    </table>
+
+                    <div class="azure-info-box" style="margin-top: 24px;">
+                        <p><strong>? Validation Passed</strong> - Your database configuration is ready to deploy</p>
+                    </div>
+
+                    <div class="azure-info-box" style="margin-top: 16px;">
+                        <p><strong>?? Estimated Cost:</strong> $0.00/month (Training Environment - No actual costs)</p>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="azure-wizard-footer">
+            <div>
+                @if (CurrentTab > 0)
+                {
+                    <button class="azure-button azure-button-secondary" @onclick="PreviousTab">
+                        ? Previous
+                    </button>
+                }
+            </div>
+            <div style="display: flex; gap: 12px;">
+                <button class="azure-button azure-button-secondary" @onclick='() => Navigation.NavigateTo($"/sql-servers/{ServerName}")'>
+                    Cancel
+                </button>
+                @if (CurrentTab < 5)
+                {
+                    <button class="azure-button azure-button-primary" @onclick="NextTab">
+                        Next: @GetNextTabName() ?
+                    </button>
+                }
+                else
+                {
+                    <button class="azure-button azure-button-primary" @onclick="CreateDatabaseAsync" disabled="@IsCreating">
+                        @(IsCreating ? "Creating..." : "Create")
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string ServerName { get; set; } = string.Empty;
+
+    [Inject]
+    private NavigationManager Navigation { get; set; } = default!;
+
+    [Inject]
+    private AzureResourceService ResourceService { get; set; } = default!;
+
+    private SqlDatabase NewDatabase { get; set; } = new()
+    {
+        PricingTier = "Standard S0",
+        ComputeTier = "Provisioned",
+        MaxSizeGB = 10,
+        Collation = "SQL_Latin1_General_CP1_CI_AS"
+    };
+
+    private int CurrentTab { get; set; } = 0;
+    private bool IsCreating { get; set; } = false;
+    private string ErrorMessage { get; set; } = string.Empty;
+
+    private string GetNextTabName()
+    {
+        return CurrentTab switch
+        {
+            0 => "Networking",
+            1 => "Security",
+            2 => "Additional settings",
+            3 => "Tags",
+            4 => "Review + Create",
+            _ => ""
+        };
+    }
+
+    private void NextTab()
+    {
+        if (CurrentTab == 0 && !ValidateBasics())
+            return;
+
+        if (CurrentTab < 5)
+            CurrentTab++;
+    }
+
+    private void PreviousTab()
+    {
+        if (CurrentTab > 0)
+            CurrentTab--;
+    }
+
+    private bool ValidateBasics()
+    {
+        ErrorMessage = string.Empty;
+
+        if (string.IsNullOrWhiteSpace(NewDatabase.Name))
+        {
+            ErrorMessage = "Database name is required";
+            return false;
+        }
+
+        var server = ResourceService.GetSqlServer(ServerName);
+        if (server == null)
+        {
+            ErrorMessage = "SQL Server not found";
+            return false;
+        }
+
+        if (server.Databases.Any(db => db.Name.Equals(NewDatabase.Name, StringComparison.OrdinalIgnoreCase)))
+        {
+            ErrorMessage = "A database with this name already exists on this server";
+            return false;
+        }
+
+        return true;
+    }
+
+    private async Task CreateDatabaseAsync()
+    {
+        if (!ValidateBasics())
+        {
+            CurrentTab = 0;
+            return;
+        }
+
+        IsCreating = true;
+        
+        // Simulate deployment delay
+        await Task.Delay(1500);
+
+        // Create the database
+        ResourceService.CreateDatabase(ServerName, NewDatabase);
+
+        Navigation.NavigateTo($"/sql-servers/{ServerName}");
+    }
+}

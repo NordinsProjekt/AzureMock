@@ -1,0 +1,55 @@
+@inherits LayoutComponentBase
+
+<div class="azure-portal">
+    <header class="azure-header">
+        <div class="azure-header-content">
+            <a href="/" class="azure-logo">
+                <svg viewBox="0 0 96 96" fill="currentColor">
+                    <path d="M41.6 78.4L27.2 32h13.6l9.6 32 9.6-32H73.6L59.2 78.4H41.6z"/>
+                    <path d="M73.6 17.6H22.4v13.6h51.2V17.6z"/>
+                </svg>
+                Microsoft Azure
+            </a>
+            <div class="azure-search">
+                <input type="text" placeholder="Search resources, services, and docs (G+/)" />
+            </div>
+            <div class="azure-user">
+                <span>Student Portal</span>
+            </div>
+        </div>
+    </header>
+
+@*     <nav class="azure-nav">
+        <a href="/" class="azure-nav-item @(IsActive("/") ? "active" : "")">
+            <span class="azure-nav-icon">??</span>
+            Home
+        </a>
+        <a href="/sql-servers" class="azure-nav-item @(IsActive("/sql-servers") ? "active" : "")">
+            <span class="azure-nav-icon">???</span>
+            SQL Servers
+        </a>
+        <a href="/all-resources" class="azure-nav-item @(IsActive("/all-resources") ? "active" : "")">
+            <span class="azure-nav-icon">??</span>
+            All Resources
+        </a>
+        <a href="/resource-groups" class="azure-nav-item @(IsActive("/resource-groups") ? "active" : "")">
+            <span class="azure-nav-icon">??</span>
+            Resource Groups
+        </a>
+    </nav> *@
+
+    <main class="azure-main-content vw-100">
+        @Body
+    </main>
+</div>
+
+@code {
+    [Inject]
+    private NavigationManager Navigation { get; set; } = default!;
+
+    private bool IsActive(string path)
+    {
+        var currentPath = new Uri(Navigation.Uri).AbsolutePath;
+        return currentPath.Equals(path, StringComparison.OrdinalIgnoreCase);
+    }
+}

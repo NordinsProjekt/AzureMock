@@ -1,0 +1,66 @@
+@page "/resource-groups"
+@layout AzurePortalLayout
+@rendermode InteractiveServer
+
+<PageTitle>Resource Groups - Microsoft Azure</PageTitle>
+
+<div class="azure-container">
+    <div class="azure-breadcrumb">
+        <a href="/">Home</a>
+        <span>/</span>
+        <span>Resource Groups</span>
+    </div>
+
+    <h1 class="azure-page-title">Resource Groups</h1>
+
+    <div class="azure-resources">
+        @if (ResourceGroupsList.Any())
+        {
+            <table class="azure-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Location</th>
+                        <th>Created</th>
+                        <th>Resources</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var rg in ResourceGroupsList)
+                    {
+                        <tr>
+                            <td>@rg.Name</td>
+                            <td>@rg.Location</td>
+                            <td>@rg.CreatedDate.ToString("MMM dd, yyyy HH:mm")</td>
+                            <td>@GetResourceCount(rg.Name)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="azure-empty-state">
+                <p>No resource groups found</p>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Inject]
+    private AzureResourceService ResourceService { get; set; } = default!;
+
+    private List<ResourceGroup> ResourceGroupsList { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        ResourceGroupsList = ResourceService.GetResourceGroups();
+    }
+
+    private int GetResourceCount(string resourceGroupName)
+    {
+        return ResourceService.GetSqlServers()
+            .Count(s => s.ResourceGroup.Equals(resourceGroupName, StringComparison.OrdinalIgnoreCase));
+    }
+}

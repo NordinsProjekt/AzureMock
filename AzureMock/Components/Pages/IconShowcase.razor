@@ -1,0 +1,221 @@
+@page "/icon-showcase"
+@layout AzurePortalLayout
+@rendermode InteractiveServer
+
+<PageTitle>Icon Showcase - Microsoft Azure</PageTitle>
+
+<div class="azure-container">
+    <div class="azure-breadcrumb">
+        <a href="/">Home</a>
+        <span>/</span>
+        <span>Icon Showcase</span>
+    </div>
+
+    <h1 class="azure-page-title">SVG Icon Showcase</h1>
+
+    <div class="azure-info-box">
+        <p><strong>?? Component Demo</strong> - This page showcases all available SVG icons with different sizes and animations.</p>
+    </div>
+
+    <h2 style="margin-top:32px;">ServiceCard Component Demo</h2>
+    
+    <div style="display:flex; gap:20px; flex-wrap:wrap; margin-top:24px;">
+        <ServiceCard Icon="IconType.CreateResource" Title="Create a resource" Href="/create-resource" Width="140px" />
+        <ServiceCard Icon="IconType.SqlServer" Title="SQL Server" Description="Managed database server" Href="/create-sql-server" Width="180px" IconSize="64" />
+        <ServiceCard Icon="IconType.Monitor" Title="Monitor" Description="Track performance" Href="#" Width="180px" IconSize="64" Animated="true" />
+    </div>
+
+    <h2 style="margin-top:48px;">All Available Icons</h2>
+    
+    <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap:16px; margin-top:24px;">
+        @foreach (var iconType in Enum.GetValues<IconType>())
+        {
+            <div class="azure-card" style="text-align:center; padding:16px;">
+                <SvgIcon Icon="iconType" Size="48" />
+                <div style="margin-top:8px; font-size:12px; font-weight:600;">@iconType.ToString()</div>
+            </div>
+        }
+    </div>
+
+    <h2 style="margin-top:48px;">Different Sizes</h2>
+    
+    <div style="display:flex; gap:24px; align-items:flex-end; margin-top:24px; flex-wrap:wrap;">
+        <div class="azure-card" style="text-align:center; padding:16px;">
+            <SvgIcon Icon="IconType.SqlServer" Size="24" />
+            <div style="margin-top:8px; font-size:12px;">24px</div>
+        </div>
+        
+        <div class="azure-card" style="text-align:center; padding:16px;">
+            <SvgIcon Icon="IconType.SqlServer" Size="32" />
+            <div style="margin-top:8px; font-size:12px;">32px</div>
+        </div>
+        
+        <div class="azure-card" style="text-align:center; padding:16px;">
+            <SvgIcon Icon="IconType.SqlServer" Size="48" />
+            <div style="margin-top:8px; font-size:12px;">48px (default)</div>
+        </div>
+        
+        <div class="azure-card" style="text-align:center; padding:16px;">
+            <SvgIcon Icon="IconType.SqlServer" Size="64" />
+            <div style="margin-top:8px; font-size:12px;">64px</div>
+        </div>
+        
+        <div class="azure-card" style="text-align:center; padding:16px;">
+            <SvgIcon Icon="IconType.SqlServer" Size="96" />
+            <div style="margin-top:8px; font-size:12px;">96px</div>
+        </div>
+    </div>
+
+    <h2 style="margin-top:48px;">Animated Icons</h2>
+    
+    <div style="display:flex; gap:24px; margin-top:24px; flex-wrap:wrap;">
+        <div class="azure-card" style="text-align:center; padding:16px;">
+            <SvgIcon Icon="IconType.CreateResource" Size="64" Animated="true" />
+            <div style="margin-top:8px; font-size:12px;">Create Resource</div>
+        </div>
+        
+        <div class="azure-card" style="text-align:center; padding:16px;">
+            <SvgIcon Icon="IconType.Monitor" Size="64" Animated="true" />
+            <div style="margin-top:8px; font-size:12px;">Monitor</div>
+        </div>
+        
+        <div class="azure-card" style="text-align:center; padding:16px;">
+            <SvgIcon Icon="IconType.Notification" Size="64" Animated="true" />
+            <div style="margin-top:8px; font-size:12px;">Notification</div>
+        </div>
+    </div>
+
+    <h2 style="margin-top:48px;">Usage Examples</h2>
+    
+    <div class="azure-wizard" style="margin-top:24px;">
+        <div class="azure-wizard-content">
+            <h3>SvgIcon Component</h3>
+            
+            <div style="background:#f5f5f5; padding:16px; border-radius:4px; margin-bottom:16px;">
+                <code style="color:#d13438;">@("<SvgIcon Icon=\"IconType.SqlServer\" Size=\"48\" />")</code>
+            </div>
+            
+            <div style="background:#f5f5f5; padding:16px; border-radius:4px; margin-bottom:16px;">
+                <code style="color:#d13438;">@("<SvgIcon Icon=\"IconType.Monitor\" Size=\"64\" Animated=\"true\" />")</code>
+            </div>
+
+            <h3 style="margin-top:32px;">ServiceCard Component</h3>
+            
+            <div style="background:#f5f5f5; padding:16px; border-radius:4px; margin-bottom:16px;">
+                <code style="color:#d13438;">@("<ServiceCard Icon=\"IconType.SqlServer\" Title=\"SQL Server\" Href=\"/create-sql-server\" />")</code>
+            </div>
+            
+            <div style="background:#f5f5f5; padding:16px; border-radius:4px; margin-bottom:16px;">
+                <code style="color:#d13438;">@("<ServiceCard Icon=\"IconType.Monitor\" Title=\"Monitor\" Description=\"Track performance\" Width=\"200px\" IconSize=\"64\" Animated=\"true\" />")</code>
+            </div>
+
+            <h3 style="margin-top:32px;">Available Icon Types</h3>
+            <ul style="column-count:3; column-gap:24px;">
+                @foreach (var iconType in Enum.GetValues<IconType>())
+                {
+                    <li style="margin-bottom:8px;">@iconType.ToString()</li>
+                }
+            </ul>
+
+            <h3 style="margin-top:32px;">SvgIcon Properties</h3>
+            <table class="azure-table">
+                <thead>
+                    <tr>
+                        <th>Property</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>Icon</code></td>
+                        <td>IconType</td>
+                        <td>CreateResource</td>
+                        <td>The icon to display</td>
+                    </tr>
+                    <tr>
+                        <td><code>Size</code></td>
+                        <td>string</td>
+                        <td>"48"</td>
+                        <td>Size in pixels (width and height)</td>
+                    </tr>
+                    <tr>
+                        <td><code>Animated</code></td>
+                        <td>bool</td>
+                        <td>false</td>
+                        <td>Enable pulse animation</td>
+                    </tr>
+                    <tr>
+                        <td><code>CssClass</code></td>
+                        <td>string</td>
+                        <td>""</td>
+                        <td>Additional CSS classes</td>
+                    </tr>
+                    <tr>
+                        <td><code>Style</code></td>
+                        <td>string</td>
+                        <td>""</td>
+                        <td>Inline CSS styles</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 style="margin-top:32px;">ServiceCard Properties</h3>
+            <table class="azure-table">
+                <thead>
+                    <tr>
+                        <th>Property</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>Icon</code></td>
+                        <td>IconType</td>
+                        <td>CreateResource</td>
+                        <td>The icon to display</td>
+                    </tr>
+                    <tr>
+                        <td><code>Title</code></td>
+                        <td>string</td>
+                        <td>""</td>
+                        <td>Card title</td>
+                    </tr>
+                    <tr>
+                        <td><code>Description</code></td>
+                        <td>string</td>
+                        <td>""</td>
+                        <td>Optional description text</td>
+                    </tr>
+                    <tr>
+                        <td><code>Href</code></td>
+                        <td>string</td>
+                        <td>"#"</td>
+                        <td>Link destination</td>
+                    </tr>
+                    <tr>
+                        <td><code>Width</code></td>
+                        <td>string</td>
+                        <td>"120px"</td>
+                        <td>Card width</td>
+                    </tr>
+                    <tr>
+                        <td><code>IconSize</code></td>
+                        <td>string</td>
+                        <td>"48"</td>
+                        <td>Icon size in pixels</td>
+                    </tr>
+                    <tr>
+                        <td><code>Animated</code></td>
+                        <td>bool</td>
+                        <td>false</td>
+                        <td>Enable icon animation</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
