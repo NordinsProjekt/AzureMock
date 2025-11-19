@@ -1,7 +1,6 @@
 @page "/create-sql-server"
 @layout AzurePortalLayout
 @rendermode InteractiveServer
-@using System.ComponentModel.DataAnnotations
 
 <PageTitle>Create SQL Server - Microsoft Azure</PageTitle>
 
@@ -31,7 +30,13 @@
                 Security
             </div>
             <div class="azure-wizard-tab @(CurrentTab == 3 ? "active" : "")" @onclick='() => CurrentTab = 3'>
-                Review + Create
+                Additional settings
+            </div>
+            <div class="azure-wizard-tab @(CurrentTab == 4 ? "active" : "")" @onclick='() => CurrentTab = 4'>
+                Tags
+            </div>
+            <div class="azure-wizard-tab @(CurrentTab == 5 ? "active" : "")" @onclick='() => CurrentTab = 5'>
+                Review + create
             </div>
         </div>
 
@@ -40,6 +45,16 @@
             {
                 <div class="azure-form-section">
                     <h3>Project Details</h3>
+                    
+                    <div class="azure-form-group">
+                        <label>Subscription *</label>
+                        <select>
+                            <option value="azure-student" selected>Azure for Students</option>
+                            <option value="pay-as-you-go">Pay-As-You-Go</option>
+                            <option value="free-trial">Free Trial</option>
+                        </select>
+                        <small>All resources in an Azure subscription are billed together</small>
+                    </div>
                     
                     <div class="azure-form-group">
                         <label>Resource Group *</label>
@@ -139,14 +154,21 @@
                             <input type="radio" name="connectivity" /> Private endpoint
                         </label>
                     </div>
+                    
+                    <div class="azure-form-group">
+                        <label>
+                            <input type="radio" name="connectivity" /> No access
+                        </label>
+                    </div>
                 </div>
 
                 <div class="azure-form-section">
                     <h3>Firewall Rules</h3>
                     <div class="azure-form-group">
                         <label>
-                            <input type="checkbox" checked /> Allow Azure services to access this server
+                            <input type="checkbox" checked /> Allow Azure services and resources to access this server
                         </label>
+                        <small>Allows Azure services like App Service, Functions to connect</small>
                     </div>
                     
                     <div class="azure-form-group">
@@ -156,14 +178,103 @@
                         <small>Current IP: 192.168.1.100 (simulated)</small>
                     </div>
                 </div>
+
+                <div class="azure-form-section">
+                    <h3>Connection Policy</h3>
+                    
+                    <div class="azure-form-group">
+                        <label>
+                            <input type="radio" name="connpolicy" checked /> Default
+                        </label>
+                        <small>Connection policy determines how clients connect to your SQL Server (Recommended)</small>
+                    </div>
+                    
+                    <div class="azure-form-group">
+                        <label>
+                            <input type="radio" name="connpolicy" /> Proxy
+                        </label>
+                        <small>All connections are proxied via the Azure SQL Database gateways</small>
+                    </div>
+                    
+                    <div class="azure-form-group">
+                        <label>
+                            <input type="radio" name="connpolicy" /> Redirect
+                        </label>
+                        <small>Clients establish connections directly to the node hosting the database</small>
+                    </div>
+                </div>
+
+                <div class="azure-form-section">
+                    <h3>Encrypted Connections</h3>
+                    
+                    <div class="azure-form-group">
+                        <label>Minimum TLS version</label>
+                        <select>
+                            <option value="1.2" selected>1.2</option>
+                            <option value="1.1">1.1</option>
+                            <option value="1.0">1.0</option>
+                        </select>
+                        <small>Minimum TLS version enforced by the server</small>
+                    </div>
+                </div>
+
+                <div class="azure-form-section">
+                    <h3>Public Network Access</h3>
+                    
+                    <div class="azure-form-group">
+                        <label>
+                            <input type="checkbox" checked /> Enable public network access
+                        </label>
+                        <small>Allow public network access to this server. If disabled, access is allowed only through private endpoints</small>
+                    </div>
+                </div>
             }
             else if (CurrentTab == 2)
             {
                 <div class="azure-form-section">
-                    <h3>Security Options</h3>
+                    <h3>Authentication Method</h3>
                     <div class="azure-info-box">
-                        <p>Security features in this training environment are simulated for learning purposes.</p>
+                        <p>Configure authentication methods for your SQL Server. In this training environment, all settings are simulated.</p>
                     </div>
+                    
+                    <div class="azure-form-group">
+                        <label>
+                            <input type="checkbox" /> Use only Microsoft Entra authentication
+                        </label>
+                        <small>Use Azure Active Directory (Entra ID) authentication only, disable SQL authentication</small>
+                    </div>
+                    
+                    <div class="azure-form-group">
+                        <label>
+                            <input type="checkbox" /> Set Microsoft Entra admin
+                        </label>
+                        <small>Configure an Azure AD user or group as the admin for this server</small>
+                    </div>
+                </div>
+
+                <div class="azure-form-section">
+                    <h3>Identity</h3>
+                    
+                    <div class="azure-form-group">
+                        <label>System assigned managed identity</label>
+                        <select>
+                            <option value="off" selected>Off</option>
+                            <option value="on">On</option>
+                        </select>
+                        <small>Managed identity allows the server to authenticate to other Azure services</small>
+                    </div>
+                    
+                    <div class="azure-form-group">
+                        <label>User assigned managed identity</label>
+                        <select>
+                            <option value="none" selected>None</option>
+                        </select>
+                        <small>Use a user-assigned managed identity</small>
+                    </div>
+                </div>
+
+                <div class="azure-form-section">
+                    <h3>Data Protection</h3>
                     
                     <div class="azure-form-group">
                         <label>
@@ -174,32 +285,173 @@
                     
                     <div class="azure-form-group">
                         <label>
-                            <input type="checkbox" /> Enable Transparent Data Encryption (TDE)
+                            <input type="checkbox" checked /> Enable Transparent Data Encryption (TDE)
                         </label>
                         <small>Encrypts data at rest</small>
                     </div>
+                </div>
 
+                <div class="azure-form-section">
+                    <h3>Ledger</h3>
+                    
                     <div class="azure-form-group">
                         <label>
-                            <input type="checkbox" checked /> Enable auditing
+                            <input type="checkbox" /> Enable ledger
                         </label>
-                        <small>Tracks database events and writes them to audit logs</small>
+                        <small>Provides tamper-evidence capabilities for your databases</small>
+                    </div>
+                </div>
+
+                <div class="azure-form-section">
+                    <h3>Auditing</h3>
+                    
+                    <div class="azure-form-group">
+                        <label>
+                            <input type="checkbox" checked /> Enable SQL Auditing
+                        </label>
+                        <small>Tracks database events and writes them to audit logs in your Azure storage account, Log Analytics workspace, or Event Hubs</small>
                     </div>
                 </div>
             }
             else if (CurrentTab == 3)
             {
                 <div class="azure-form-section">
-                    <h3>Review Your Configuration</h3>
+                    <h3>Data Source</h3>
                     
+                    <div class="azure-form-group">
+                        <label>Start with</label>
+                        <select>
+                            <option value="none" selected>None (blank server)</option>
+                            <option value="sample">Sample</option>
+                        </select>
+                        <small>Start with a blank server or restore from a backup</small>
+                    </div>
+                </div>
+
+                <div class="azure-form-section">
+                    <h3>Server Configuration</h3>
+                    
+                    <div class="azure-form-group">
+                        <label>Server collation</label>
+                        <select>
+                            <option value="SQL_Latin1_General_CP1_CI_AS" selected>SQL_Latin1_General_CP1_CI_AS (Default)</option>
+                            <option value="SQL_Latin1_General_CP1_CS_AS">SQL_Latin1_General_CP1_CS_AS</option>
+                            <option value="Latin1_General_CI_AS">Latin1_General_CI_AS</option>
+                            <option value="Latin1_General_CS_AS">Latin1_General_CS_AS</option>
+                        </select>
+                        <small>Collation determines sorting and comparison rules for character data</small>
+                    </div>
+                </div>
+
+                <div class="azure-form-section">
+                    <h3>Maintenance Window</h3>
+                    <div class="azure-info-box">
+                        <p>Choose a maintenance window for system updates and patches</p>
+                    </div>
+                    
+                    <div class="azure-form-group">
+                        <label>
+                            <input type="radio" name="maintenance" checked /> System default (5pm to 8am local time)
+                        </label>
+                    </div>
+                    
+                    <div class="azure-form-group">
+                        <label>
+                            <input type="radio" name="maintenance" /> Weekday window
+                        </label>
+                        <small>Monday to Thursday 10pm to 6am local time</small>
+                    </div>
+                    
+                    <div class="azure-form-group">
+                        <label>
+                            <input type="radio" name="maintenance" /> Weekend window
+                        </label>
+                        <small>Friday 10pm to Monday 6am local time</small>
+                    </div>
+                </div>
+            }
+            else if (CurrentTab == 4)
+            {
+                <div class="azure-form-section">
+                    <h3>Tags</h3>
+                    <div class="azure-info-box">
+                        <p>Tags are name/value pairs that enable you to categorize resources and view consolidated billing by applying the same tag to multiple resources and resource groups.</p>
+                    </div>
+
+                    <p style="font-size:14px; color:#605e5c; margin-bottom:16px;">
+                        Note that if you create tags and then change resource settings on other tabs, your tags will be automatically updated.
+                    </p>
+                    
+                    @if (Tags.Any())
+                    {
+                        <table class="azure-table" style="margin-bottom: 16px;">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Value</th>
+                                    <th style="width: 100px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Tags.Count; i++)
+                                {
+                                    var index = i;
+                                    <tr>
+                                        <td>
+                                            <input type="text" @bind="Tags[index].Key" style="width: 100%;" />
+                                        </td>
+                                        <td>
+                                            <input type="text" @bind="Tags[index].Value" style="width: 100%;" />
+                                        </td>
+                                        <td>
+                                            <button class="azure-link-button" @onclick='() => RemoveTag(index)'>Delete</button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    
+                    <button class="azure-button azure-button-secondary" @onclick="AddTag">+ Add tag pair</button>
+                </div>
+
+                <div class="azure-form-section">
+                    <h3>Common tags (optional)</h3>
+                    <p style="font-size:14px; color:#605e5c; margin-bottom:12px;">Select from commonly used tags:</p>
+                    
+                    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                        <button class="azure-button azure-button-secondary" @onclick='() => AddPredefinedTag("Environment", "Development")'>Environment: Development</button>
+                        <button class="azure-button azure-button-secondary" @onclick='() => AddPredefinedTag("Environment", "Production")'>Environment: Production</button>
+                        <button class="azure-button azure-button-secondary" @onclick='() => AddPredefinedTag("Environment", "Test")'>Environment: Test</button>
+                        <button class="azure-button azure-button-secondary" @onclick='() => AddPredefinedTag("Department", "IT")'>Department: IT</button>
+                        <button class="azure-button azure-button-secondary" @onclick='() => AddPredefinedTag("CostCenter", "")'>Cost Center</button>
+                        <button class="azure-button azure-button-secondary" @onclick='() => AddPredefinedTag("Owner", "")'>Owner</button>
+                        <button class="azure-button azure-button-secondary" @onclick='() => AddPredefinedTag("Project", "")'>Project</button>
+                    </div>
+                </div>
+            }
+            else if (CurrentTab == 5)
+            {
+                <div class="azure-form-section">
+                    <h3>Review + create</h3>
+                    
+                    <div class="azure-info-box" style="background-color: #dff6dd; border-left-color: #107c10;">
+                        <p><strong>? Validation passed</strong></p>
+                    </div>
+
+                    <h4 style="margin-top:24px; margin-bottom:12px; font-size:16px; font-weight:600;">Basics</h4>
                     <table class="azure-table">
                         <tr>
-                            <td><strong>Server Name</strong></td>
-                            <td>@NewServer.Name</td>
+                            <td style="width: 200px;"><strong>Subscription</strong></td>
+                            <td>Azure for Students</td>
                         </tr>
                         <tr>
                             <td><strong>Resource Group</strong></td>
                             <td>@(ShowNewResourceGroup ? NewResourceGroupName : NewServer.ResourceGroup)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Server Name</strong></td>
+                            <td>@(NewServer.Name).database.windows.net</td>
                         </tr>
                         <tr>
                             <td><strong>Location</strong></td>
@@ -215,8 +467,90 @@
                         </tr>
                     </table>
 
+                    <h4 style="margin-top:24px; margin-bottom:12px; font-size:16px; font-weight:600;">Networking</h4>
+                    <table class="azure-table">
+                        <tr>
+                            <td style="width: 200px;"><strong>Connectivity</strong></td>
+                            <td>Public endpoint</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Firewall Rules</strong></td>
+                            <td>Allow Azure services, Current client IP</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Connection Policy</strong></td>
+                            <td>Default</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Minimum TLS Version</strong></td>
+                            <td>1.2</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Public Network Access</strong></td>
+                            <td>Enabled</td>
+                        </tr>
+                    </table>
+
+                    <h4 style="margin-top:24px; margin-bottom:12px; font-size:16px; font-weight:600;">Security</h4>
+                    <table class="azure-table">
+                        <tr>
+                            <td style="width: 200px;"><strong>Authentication</strong></td>
+                            <td>SQL authentication</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Microsoft Defender</strong></td>
+                            <td>Enabled</td>
+                        </tr>
+                        <tr>
+                            <td><strong>TDE</strong></td>
+                            <td>Enabled</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ledger</strong></td>
+                            <td>Disabled</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Auditing</strong></td>
+                            <td>Enabled</td>
+                        </tr>
+                    </table>
+
+                    <h4 style="margin-top:24px; margin-bottom:12px; font-size:16px; font-weight:600;">Additional Settings</h4>
+                    <table class="azure-table">
+                        <tr>
+                            <td style="width: 200px;"><strong>Data Source</strong></td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Collation</strong></td>
+                            <td>SQL_Latin1_General_CP1_CI_AS</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Maintenance Window</strong></td>
+                            <td>System default</td>
+                        </tr>
+                    </table>
+
+                    @if (Tags.Any(t => !string.IsNullOrWhiteSpace(t.Key)))
+                    {
+                        <h4 style="margin-top:24px; margin-bottom:12px; font-size:16px; font-weight:600;">Tags</h4>
+                        <table class="azure-table">
+                            @foreach (var tag in Tags.Where(t => !string.IsNullOrWhiteSpace(t.Key)))
+                            {
+                                <tr>
+                                    <td style="width: 200px;"><strong>@tag.Key</strong></td>
+                                    <td>@tag.Value</td>
+                                </tr>
+                            }
+                        </table>
+                    }
+
                     <div class="azure-info-box" style="margin-top: 24px;">
-                        <p><strong>Estimated Cost:</strong> $0.00 (Training Environment - No actual costs)</p>
+                        <p><strong>?? Estimated Cost:</strong> $0.00/month (Training Environment - No actual costs)</p>
+                    </div>
+
+                    <div class="azure-info-box" style="margin-top: 16px;">
+                        <p><strong>?? Training Environment:</strong> This is a simulated SQL Server. No actual Azure resources or costs will be incurred.</p>
                     </div>
                 </div>
             }
@@ -235,7 +569,7 @@
                 <button class="azure-button azure-button-secondary" @onclick='() => Navigation.NavigateTo("/sql-servers")'>
                     Cancel
                 </button>
-                @if (CurrentTab < 3)
+                @if (CurrentTab < 5)
                 {
                     <button class="azure-button azure-button-primary" @onclick="NextTab">
                         Next: @GetNextTabName()
@@ -267,6 +601,7 @@
     private bool IsCreating { get; set; } = false;
     private string ServerNameError { get; set; } = string.Empty;
     private string PasswordError { get; set; } = string.Empty;
+    private List<TagPair> Tags { get; set; } = new();
 
     private List<ResourceGroup> ResourceGroups { get; set; } = new();
     private List<string> Locations { get; set; } = new();
@@ -288,7 +623,9 @@
         {
             0 => "Networking",
             1 => "Security",
-            2 => "Review + Create",
+            2 => "Additional settings",
+            3 => "Tags",
+            4 => "Review + create",
             _ => ""
         };
     }
@@ -298,7 +635,7 @@
         if (CurrentTab == 0 && !ValidateBasics())
             return;
 
-        if (CurrentTab < 3)
+        if (CurrentTab < 5)
             CurrentTab++;
     }
 
@@ -306,6 +643,27 @@
     {
         if (CurrentTab > 0)
             CurrentTab--;
+    }
+
+    private void AddTag()
+    {
+        Tags.Add(new TagPair { Key = "", Value = "" });
+    }
+
+    private void RemoveTag(int index)
+    {
+        if (index >= 0 && index < Tags.Count)
+        {
+            Tags.RemoveAt(index);
+        }
+    }
+
+    private void AddPredefinedTag(string key, string value)
+    {
+        if (!Tags.Any(t => t.Key.Equals(key, StringComparison.OrdinalIgnoreCase)))
+        {
+            Tags.Add(new TagPair { Key = key, Value = value });
+        }
     }
 
     private bool ValidateBasics()
@@ -322,6 +680,26 @@
         if (!System.Text.RegularExpressions.Regex.IsMatch(NewServer.Name, "^[a-z0-9-]+$"))
         {
             ServerNameError = "Server name must contain only lowercase letters, numbers, and hyphens";
+            return false;
+        }
+
+        if (NewServer.Name.Length < 1 || NewServer.Name.Length > 63)
+        {
+            ServerNameError = "Server name must be between 1 and 63 characters";
+            return false;
+        }
+
+        if (NewServer.Name.StartsWith('-') || NewServer.Name.EndsWith('-'))
+        {
+            ServerNameError = "Server name cannot start or end with a hyphen";
+            return false;
+        }
+
+        // Check reserved names
+        string[] reservedNames = { "admin", "administrator", "sa", "root", "dbmanager", "loginmanager", "dbo", "guest", "public" };
+        if (reservedNames.Contains(NewServer.AdminUsername?.ToLower()))
+        {
+            PasswordError = $"Username '{NewServer.AdminUsername}' is reserved and cannot be used";
             return false;
         }
 
@@ -352,6 +730,24 @@
         if (string.IsNullOrWhiteSpace(NewServer.AdminPassword))
         {
             PasswordError = "Password is required";
+            return false;
+        }
+
+        if (NewServer.AdminPassword.Length < 8)
+        {
+            PasswordError = "Password must be at least 8 characters long";
+            return false;
+        }
+
+        // Password complexity check
+        bool hasUpper = NewServer.AdminPassword.Any(char.IsUpper);
+        bool hasLower = NewServer.AdminPassword.Any(char.IsLower);
+        bool hasDigit = NewServer.AdminPassword.Any(char.IsDigit);
+        bool hasSpecial = NewServer.AdminPassword.Any(ch => !char.IsLetterOrDigit(ch));
+
+        if (!hasUpper || !hasLower || !hasDigit || !hasSpecial)
+        {
+            PasswordError = "Password must contain uppercase, lowercase, numbers, and special characters";
             return false;
         }
 
@@ -392,5 +788,11 @@
         ResourceService.CreateSqlServer(NewServer);
 
         Navigation.NavigateTo($"/sql-servers/{NewServer.Name}");
+    }
+
+    private class TagPair
+    {
+        public string Key { get; set; } = string.Empty;
+        public string Value { get; set; } = string.Empty;
     }
 }

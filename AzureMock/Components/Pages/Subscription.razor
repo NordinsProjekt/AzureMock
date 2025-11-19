@@ -1,0 +1,237 @@
+@page "/subscription"
+@layout AzurePortalLayout
+@rendermode InteractiveServer
+@using AzureMock.Models
+
+<PageTitle>Subscription - Microsoft Azure</PageTitle>
+
+<div class="azure-container">
+    <div class="azure-breadcrumb">
+        <a href="/">Home</a>
+        <span>/</span>
+        <span>Subscription</span>
+    </div>
+
+    <h1 class="azure-page-title">@SubscriptionData.Name</h1>
+
+    <div class="azure-info-box" style="background-color: #f0f7ff; border-left-color: #0078d4;">
+        <p><strong>?? Training Environment:</strong> This subscription shows simulated costs and usage for learning purposes. No real Azure charges apply.</p>
+    </div>
+
+    <!-- Subscription Overview Cards -->
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:16px; margin-top:24px;">
+        <div class="azure-card">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <SvgIcon Icon="IconType.Credits" Size="48" />
+                <div>
+                    <div style="font-size:12px; color:#605e5c; margin-bottom:4px;">Credit Remaining</div>
+                    <div style="font-size:24px; font-weight:600; color:#1f9f6b;">$@SubscriptionData.CreditRemaining.ToString("F2")</div>
+                    <div style="font-size:11px; color:#605e5c;">of $@SubscriptionData.CreditTotal.ToString("F2")</div>
+                </div>
+            </div>
+            <div style="margin-top:12px; background:#e0e0e0; height:8px; border-radius:4px; overflow:hidden;">
+                <div style="background:#1f9f6b; height:100%; width:@(SubscriptionData.CreditRemaining / SubscriptionData.CreditTotal * 100)%;"></div>
+            </div>
+        </div>
+
+        <div class="azure-card">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <SvgIcon Icon="IconType.CostManagement" Size="48" />
+                <div>
+                    <div style="font-size:12px; color:#605e5c; margin-bottom:4px;">Total Spent</div>
+                    <div style="font-size:24px, font-weight:600; color:#d13438;">$@TotalCost.ToString("F2")</div>
+                    <div style="font-size:11px; color:#605e5c;">Last 30 days</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="azure-card">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <SvgIcon Icon="IconType.Subscriptions" Size="48" />
+                <div>
+                    <div style="font-size:12px; color:#605e5c; margin-bottom:4px;">Subscription Status</div>
+                    <div style="font-size:20px; font-weight:600; color:#0aa854;">@SubscriptionData.Status</div>
+                    <div style="font-size:11px; color:#605e5c;">Expires @SubscriptionData.ExpiryDate.ToString("MMM dd, yyyy")</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="azure-card">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <SvgIcon Icon="IconType.Monitor" Size="48" />
+                <div>
+                    <div style="font-size:12px; color:#605e5c; margin-bottom:4px;">Avg Daily Cost</div>
+                    <div style="font-size:24px; font-weight:600; color:#0078d4;">$@AverageDailyCost.ToString("F2")</div>
+                    <div style="font-size:11px; color:#605e5c;">Last 30 days</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cost Chart -->
+    <div class="azure-card" style="margin-top:24px;">
+        <h3 style="margin:0 0 16px 0;">Cost Trend (Last 30 Days)</h3>
+        <div class="cost-chart-container">
+            <div class="cost-chart">
+                <div class="cost-chart-y-axis">
+                    @for (int i = 5; i >= 0; i--)
+                    {
+                        var value = (MaxDailyCost / 5 * i);
+                        <div class="cost-chart-y-label">$@value.ToString("F1")</div>
+                    }
+                </div>
+                <div class="cost-chart-bars">
+                    @foreach (var entry in DailyCosts.OrderBy(x => x.Key))
+                    {
+                        var percentage = MaxDailyCost > 0 ? (double)(entry.Value / MaxDailyCost * 100) : 0;
+                        var isToday = entry.Key.Date == DateTime.Now.Date;
+                        <div class="cost-chart-bar-container" title="@entry.Key.ToString("MMM dd"): $@entry.Value.ToString("F2")">
+                            <div class="cost-chart-bar @(isToday ? "today" : "")" style="height: @percentage%">
+                                @if (entry.Value > 0)
+                                {
+                                    <span class="cost-chart-bar-value">$@entry.Value.ToString("F1")</span>
+                                }
+                            </div>
+                            <div class="cost-chart-bar-label">@entry.Key.ToString("M/d")</div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cost Breakdown by Resource Type -->
+    <div class="azure-card" style="margin-top:24px;">
+        <h3 style="margin:0 0 16px 0;">Cost by Resource Type</h3>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px;">
+            @foreach (var costByType in CostByResourceType.OrderByDescending(x => x.Value))
+            {
+                var percentage = TotalCost > 0 ? (costByType.Value / TotalCost * 100) : 0;
+                <div style="padding:12px; background:#f8f9fa; border-radius:4px;">
+                    <div style="font-size:13px; font-weight:600; margin-bottom:6px;">@costByType.Key</div>
+                    <div style="font-size:20px; color:#0078d4; font-weight:600; margin-bottom:4px;">$@costByType.Value.ToString("F2")</div>
+                    <div style="font-size:11px; color:#605e5c;">@percentage.ToString("F1")% of total</div>
+                    <div style="margin-top:8px; background:#e0e0e0; height:6px; border-radius:3px; overflow:hidden;">
+                        <div style="background:#0078d4; height:100%; width:@percentage%;"></div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Recent Costs -->
+    <div class="azure-card" style="margin-top:24px;">
+        <h3 style="margin:0 0 16px 0;">Recent Costs</h3>
+        <table class="azure-table">
+            <thead>
+                <tr>
+                    <th>Date & Time</th>
+                    <th>Resource Type</th>
+                    <th>Resource Name</th>
+                    <th style="text-align:right;">Cost</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var cost in RecentCosts)
+                {
+                    <tr>
+                        <td>@cost.Date.ToString("MMM dd, yyyy h:mm tt")</td>
+                        <td>
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <SvgIcon Icon="@GetIconForResourceType(cost.ResourceType)" Size="24" />
+                                @cost.ResourceType
+                            </div>
+                        </td>
+                        <td>@cost.ResourceName</td>
+                        <td style="text-align:right; font-weight:600; color:#d13438;">$@cost.Cost.ToString("F2")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Subscription Details -->
+    <div class="azure-card" style="margin-top:24px;">
+        <h3 style="margin:0 0 16px 0;">Subscription Details</h3>
+        <table class="azure-table">
+            <tr>
+                <td style="width:200px;"><strong>Subscription ID</strong></td>
+                <td style="font-family:monospace; font-size:13px;">@SubscriptionData.Id</td>
+            </tr>
+            <tr>
+                <td><strong>Subscription Name</strong></td>
+                <td>@SubscriptionData.Name</td>
+            </tr>
+            <tr>
+                <td><strong>Subscription Type</strong></td>
+                <td>@SubscriptionData.Type</td>
+            </tr>
+            <tr>
+                <td><strong>Status</strong></td>
+                <td>
+                    <span style="display:inline-block; padding:4px 12px; background:#dff6dd; color:#107c10; border-radius:12px; font-size:12px; font-weight:600;">
+                        ? @SubscriptionData.Status
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Expiry Date</strong></td>
+                <td>@SubscriptionData.ExpiryDate.ToString("MMMM dd, yyyy")</td>
+            </tr>
+            <tr>
+                <td><strong>Total Credit</strong></td>
+                <td>$@SubscriptionData.CreditTotal.ToString("F2")</td>
+            </tr>
+            <tr>
+                <td><strong>Credit Remaining</strong></td>
+                <td style="color:#1f9f6b; font-weight:600;">$@SubscriptionData.CreditRemaining.ToString("F2")</td>
+            </tr>
+            <tr>
+                <td><strong>Credit Used</strong></td>
+                <td style="color:#d13438; font-weight:600;">$@TotalCost.ToString("F2")</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+@code {
+    [Inject]
+    private AzureResourceService ResourceService { get; set; } = default!;
+
+    private Models.Subscription SubscriptionData { get; set; } = new();
+    private Dictionary<DateTime, decimal> DailyCosts { get; set; } = new();
+    private List<CostEntry> RecentCosts { get; set; } = new();
+    private Dictionary<string, decimal> CostByResourceType { get; set; } = new();
+    private decimal TotalCost { get; set; }
+    private decimal AverageDailyCost { get; set; }
+    private decimal MaxDailyCost { get; set; }
+
+    protected override void OnInitialized()
+    {
+        SubscriptionData = ResourceService.GetSubscription();
+        DailyCosts = ResourceService.GetDailyCosts(30);
+        RecentCosts = ResourceService.GetRecentCosts(15);
+        CostByResourceType = ResourceService.GetCostByResourceType();
+        TotalCost = ResourceService.GetTotalCost();
+        
+        if (DailyCosts.Any())
+        {
+            AverageDailyCost = DailyCosts.Average(x => x.Value);
+            MaxDailyCost = DailyCosts.Max(x => x.Value);
+        }
+    }
+
+    private IconType GetIconForResourceType(string resourceType)
+    {
+        return resourceType switch
+        {
+            "SQL Server" => IconType.SqlServer,
+            "SQL Database" => IconType.SqlDatabase,
+            "App Service" => IconType.AppService,
+            "Storage" => IconType.Storage,
+            "Virtual Machine" => IconType.VirtualMachine,
+            "Function App" => IconType.Functions,
+            _ => IconType.AllResources
+        };
+    }
+}

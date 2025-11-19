@@ -1,0 +1,44 @@
+@namespace AzureMock.Components.Shared
+
+<span class="info-tooltip" @onmouseenter="ShowTooltip" @onmouseleave="HideTooltip">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="#0078d4" style="vertical-align: middle; cursor: help;">
+        <circle cx="8" cy="8" r="7" fill="none" stroke="#0078d4" stroke-width="1.5"/>
+        <text x="8" y="11" text-anchor="middle" font-size="11" font-weight="bold" fill="#0078d4">i</text>
+    </svg>
+    @if (IsVisible)
+    {
+        <div class="info-tooltip-content" @onclick:stopPropagation="true">
+            <div class="info-tooltip-title">@Title</div>
+            <div class="info-tooltip-body">@ChildContent</div>
+            @if (!string.IsNullOrEmpty(LearnMoreUrl))
+            {
+                <div class="info-tooltip-link">
+                    <a href="@LearnMoreUrl" target="_blank">Learn more ?</a>
+                </div>
+            }
+        </div>
+    }
+</span>
+
+@code {
+    [Parameter]
+    public string Title { get; set; } = "Information";
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public string LearnMoreUrl { get; set; } = string.Empty;
+
+    private bool IsVisible { get; set; } = false;
+
+    private void ShowTooltip()
+    {
+        IsVisible = true;
+    }
+
+    private void HideTooltip()
+    {
+        IsVisible = false;
+    }
+}
