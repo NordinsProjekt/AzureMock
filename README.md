@@ -2,22 +2,22 @@
 
 <div align="center">
 
-![Azure Training](https://img.shields.io/badge/Azure-Training%20Environment-0078D4?style=for-the-badge&logo=microsoft-azure&logoColor=white)
-![Education](https://img.shields.io/badge/Purpose-Education-success?style=for-the-badge&logo=academia&logoColor=white)
-![No Cost](https://img.shields.io/badge/Cost-FREE-brightgreen?style=for-the-badge)
-![.NET 9](https://img.shields.io/badge/.NET-9.0-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
+![Azure Training](https://img.shields.io/badge/Azure-Training%20Environment-0078D4style=for-the-badge&logo=microsoft-azure&logoColor=white)
+![Education](https://img.shields.io/badge/Purpose-Education-successstyle=for-the-badge&logo=academia&logoColor=white)
+![No Cost](https://img.shields.io/badge/Cost-FREE-brightgreenstyle=for-the-badge)
+![.NET 9](https://img.shields.io/badge/.NET-9.0-512BD4style=for-the-badge&logo=dotnet&logoColor=white)
 
-### ?? A Safe, Cost-Free Azure Learning Platform for Classroom Education
+###  A Safe, Cost-Free Azure Learning Platform for Classroom Education
 
 *Practice Azure SQL Server and Database management without spending a penny or risking production systems*
 
-[Getting Started](#-getting-started-for-instructors) • [Student Guide](#-for-students) • [Features](#-what-students-will-learn) • [Exercises](#-classroom-exercises)
+[Getting Started](#-getting-started-for-instructors) â€¢ [Student Guide](#-for-students) â€¢ [Features](#-what-students-will-learn) â€¢ [Exercises](#-classroom-exercises)
 
 </div>
 
 ---
 
-## ?? Educational Purpose
+##  Educational Purpose
 
 **This is NOT a production application.** This is a **fully simulated Azure Portal environment** specifically designed for:
 
@@ -29,29 +29,29 @@
 ### Why This Project Exists
 
 Real Azure Portal training presents several challenges for education:
-- ? **Cost barriers**: Students need credit cards or institutional accounts
-- ? **Risk of charges**: Accidental misconfiguration can incur unexpected costs
-- ? **Fear of mistakes**: Students hesitate to experiment
-- ? **Resource limits**: Free tiers have restrictions
-- ? **Cleanup complexity**: Forgetting to delete resources costs money
+-  **Cost barriers**: Students need credit cards or institutional accounts
+-  **Risk of charges**: Accidental misconfiguration can incur unexpected costs
+-  **Fear of mistakes**: Students hesitate to experiment
+-  **Resource limits**: Free tiers have restrictions
+-  **Cleanup complexity**: Forgetting to delete resources costs money
 
 **Azure Mock solves all of these problems:**
-- ? **Zero cost**: No Azure subscription needed
-- ? **Zero risk**: Nothing connects to real Azure
-- ? **Safe experimentation**: Students can try, fail, and retry
-- ? **Unlimited resources**: Create as many servers as needed
-- ? **Instant reset**: Restart the app to start fresh
+-  **Zero cost**: No Azure subscription needed
+-  **Zero risk**: Nothing connects to real Azure
+-  **Safe experimentation**: Students can try, fail, and retry
+-  **Unlimited resources**: Create as many servers as needed
+-  **Instant reset**: Restart the app to start fresh
 
 ---
 
-## ?? What Students Will Learn
+##  What Students Will Learn
 
 ### Core Azure Concepts
 
 #### 1. **Resource Management**
 - Understanding **Resource Groups** as logical containers
 - Organizing resources by project, environment, or department
-- The hierarchy: Subscription ? Resource Group ? Resources
+- The hierarchy: Subscription  Resource Group  Resources
 - Best practices for naming conventions
 
 #### 2. **Azure SQL Server Architecture**
@@ -83,18 +83,18 @@ Real Azure Portal training presents several challenges for education:
 ### Learning Methodology
 
 This project uses **interactive tooltips** throughout the interface. Every configuration option includes:
-- ?? **Clear explanation** of what the option does
-- ?? **Cost information** (from free to enterprise pricing)
-- ?? **When to use** this option
-- ? **Performance implications**
-- ?? **Security considerations**
-- ? **Best practices**
+-  **Clear explanation** of what the option does
+-  **Cost information** (from free to enterprise pricing)
+-  **When to use** this option
+-  **Performance implications**
+-  **Security considerations**
+-  **Best practices**
 
 Students learn by **doing** and **reading** simultaneously, reinforcing concepts through hands-on practice.
 
 ---
 
-## ????? Getting Started for Instructors
+##  Getting Started for Instructors
 
 ### Prerequisites
 
@@ -142,7 +142,7 @@ You'll see the Azure Portal home page. The application is ready for student use!
 
 ### Classroom Setup Recommendations
 
-#### ??? **Lab Environment Setup**
+####  **Lab Environment Setup**
 
 **Option A: Each Student Runs Locally**
 - Students install .NET 9 SDK on their computers
@@ -162,7 +162,7 @@ You'll see the Azure Portal home page. The application is ready for student use!
 - No local installation needed
 - Best for: Large classes, remote learning
 
-#### ?? **Recommended Teaching Sequence**
+####  **Recommended Teaching Sequence**
 
 **Week 1: Introduction to Azure**
 - Demonstrate the Azure Portal Mock interface
@@ -191,7 +191,7 @@ You'll see the Azure Portal home page. The application is ready for student use!
 
 ---
 
-## ????? For Students
+##  For Students
 
 ### How to Use This Application
 
@@ -204,7 +204,7 @@ The left sidebar contains all major sections:
 - **All Resources**: See everything you've created
 
 #### 2. **Read the Tooltips**
-Hover over any **?? icon** to learn:
+Hover over any ** icon** to learn:
 - What the option does
 - How much it costs in real Azure
 - When you should use it
@@ -219,7 +219,7 @@ Hover over any **?? icon** to learn:
 
 ### Student Exercises
 
-#### ?? **Exercise 1: Create Your First SQL Server**
+####  **Exercise 1: Create Your First SQL Server**
 
 **Objective**: Understand SQL Server creation and configuration
 
@@ -251,7 +251,7 @@ Hover over any **?? icon** to learn:
 
 ---
 
-#### ?? **Exercise 2: Database Pricing Analysis**
+####  **Exercise 2: Database Pricing Analysis**
 
 **Objective**: Understand Azure database pricing tiers
 
@@ -275,7 +275,7 @@ Hover over any **?? icon** to learn:
 
 ---
 
-#### ?? **Exercise 3: Security Configuration**
+####  **Exercise 3: Security Configuration**
 
 **Objective**: Learn about database security layers
 
@@ -302,7 +302,7 @@ Hover over any **?? icon** to learn:
 
 ---
 
-#### ?? **Exercise 4: Cost Optimization Challenge**
+####  **Exercise 4: Cost Optimization Challenge**
 
 **Objective**: Optimize Azure costs for different scenarios
 
@@ -331,7 +331,7 @@ Hover over any **?? icon** to learn:
 
 ---
 
-#### ?? **Exercise 5: Resource Organization**
+####  **Exercise 5: Resource Organization**
 
 **Objective**: Master resource group organization
 
@@ -358,23 +358,23 @@ Hover over any **?? icon** to learn:
 
 ---
 
-## ?? Features Overview
+##  Features Overview
 
-### ? **Realistic Azure Interface**
+###  **Realistic Azure Interface**
 - Authentic Azure Portal look and feel
 - Multi-step wizard forms (just like real Azure)
 - Breadcrumb navigation
 - Card-based service catalog
 - Professional styling and icons
 
-### ?? **Visual Learning Tools**
+###  **Visual Learning Tools**
 - **25+ custom SVG icons** for Azure services
 - Color-coded sections and status indicators
 - Interactive hover effects
 - Visual feedback for actions
 - Progress indicators
 
-### ?? **Resource Management**
+###  **Resource Management**
 - Create and manage SQL Servers
 - Create and configure databases
 - Organize with resource groups
@@ -382,7 +382,7 @@ Hover over any **?? icon** to learn:
 - Delete resources (with confirmation)
 - Track creation dates and status
 
-### ?? **Educational Tooltips**
+###  **Educational Tooltips**
 Over **55+ interactive tooltips** covering:
 - Configuration options explained
 - Real Azure pricing information
@@ -391,14 +391,14 @@ Over **55+ interactive tooltips** covering:
 - When to use each option
 - Cost optimization tips
 
-### ?? **Cost Transparency**
+###  **Cost Transparency**
 Realistic pricing information for:
 - **Database tiers**: $5/month (Basic) to $930/month (Premium P2)
 - **Security features**: Free (TDE) to $15/month (Defender)
 - **Storage redundancy**: $0.05/GB (LRS) to $0.10/GB (GRS)
 - **Network options**: Free (public) to $10/month (private endpoint)
 
-### ?? **Security Education**
+###  **Security Education**
 Learn about:
 - Transparent Data Encryption (TDE)
 - Microsoft Defender for SQL
@@ -409,7 +409,7 @@ Learn about:
 - SQL Auditing
 - Database ledger
 
-### ? **Performance Concepts**
+###  **Performance Concepts**
 Understand:
 - DTUs (Database Transaction Units)
 - Provisioned vs Serverless compute
@@ -419,7 +419,7 @@ Understand:
 
 ---
 
-## ??? Technical Architecture
+##  Technical Architecture
 
 ### Technology Stack
 
@@ -442,40 +442,40 @@ Understand:
 
 ```
 AzureMock/
-??? Components/
-?   ??? Layout/
-?   ?   ??? AzurePortalLayout.razor    # Main portal layout
-?   ?   ??? MainLayout.razor           # Base layout
-?   ?   ??? NavMenu.razor              # Navigation sidebar
-?   ??? Pages/
-?   ?   ??? PortalHome.razor           # Home page
-?   ?   ??? CreateSqlServer.razor      # SQL Server wizard
-?   ?   ??? CreateDatabase.razor       # Database wizard
-?   ?   ??? SqlServers.razor           # Server list
-?   ?   ??? SqlServerDetail.razor      # Server details
-?   ?   ??? ResourceGroups.razor       # Resource group list
-?   ?   ??? CreateResourceGroup.razor  # RG creation
-?   ?   ??? AllResources.razor         # All resources view
-?   ?   ??? Subscription.razor         # Cost tracking
-?   ?   ??? IconShowcase.razor         # Icon gallery
-?   ??? Shared/
-?       ??? SvgIcon.razor              # Icon component
-?       ??? ServiceCard.razor          # Service cards
-?       ??? InfoTooltip.razor          # Educational tooltips
-?       ??? IconType.cs                # Icon enumerations
-??? Models/
-?   ??? SqlServer.cs                   # Server model
-?   ??? SqlDatabase.cs                 # Database model
-?   ??? ResourceGroup.cs               # Resource group model
-?   ??? Subscription.cs                # Subscription model
-?   ??? Extensions/
-?       ??? ResourceGroupValidator.cs  # Validation logic
-??? Services/
-?   ??? AzureResourceService.cs        # Business logic
-??? wwwroot/
-?   ??? azure-portal.css               # Portal styling
-??? Program.cs                         # Application startup
-??? App.razor                          # Root component
+ Components/
+    Layout/
+       AzurePortalLayout.razor    # Main portal layout
+       MainLayout.razor           # Base layout
+       NavMenu.razor              # Navigation sidebar
+    Pages/
+       PortalHome.razor           # Home page
+       CreateSqlServer.razor      # SQL Server wizard
+       CreateDatabase.razor       # Database wizard
+       SqlServers.razor           # Server list
+       SqlServerDetail.razor      # Server details
+       ResourceGroups.razor       # Resource group list
+       CreateResourceGroup.razor  # RG creation
+       AllResources.razor         # All resources view
+       Subscription.razor         # Cost tracking
+       IconShowcase.razor         # Icon gallery
+    Shared/
+        SvgIcon.razor              # Icon component
+        ServiceCard.razor          # Service cards
+        InfoTooltip.razor          # Educational tooltips
+        IconType.cs                # Icon enumerations
+ Models/
+    SqlServer.cs                   # Server model
+    SqlDatabase.cs                 # Database model
+    ResourceGroup.cs               # Resource group model
+    Subscription.cs                # Subscription model
+    Extensions/
+        ResourceGroupValidator.cs  # Validation logic
+ Services/
+    AzureResourceService.cs        # Business logic
+ wwwroot/
+    azure-portal.css               # Portal styling
+ Program.cs                         # Application startup
+ App.razor                          # Root component
 ```
 
 ### Data Flow
@@ -488,26 +488,26 @@ AzureMock/
 
 ### Key Design Decisions
 
-**Why Blazor Server?**
+**Why Blazor Server**
 - No JavaScript required
 - Easier for students to understand
 - Full .NET capabilities
 - Rapid development
 
-**Why In-Memory Storage?**
+**Why In-Memory Storage**
 - No database setup needed
 - Instant deployment
 - Perfect for training environments
 - Data resets on app restart (clean slate)
 
-**Why Singleton Service?**
+**Why Singleton Service**
 - Simple state management
 - All students share same data (good for demos)
 - Easy to understand for beginners
 
 ---
 
-## ?? Teaching Tips for Instructors
+##  Teaching Tips for Instructors
 
 ### Effective Classroom Strategies
 
@@ -521,37 +521,37 @@ AzureMock/
 - Remind students nothing is real - they can't break anything
 - Encourage "what if" questions
 - Let students make mistakes and learn from them
-- Create competitive challenges (who can create the cheapest viable solution?)
+- Create competitive challenges (who can create the cheapest viable solution)
 
 #### **Use Real-World Scenarios**
 Present scenarios like:
 - "Your startup needs a database but budget is $20/month"
-- "You're building a banking app - what security features do you enable?"
-- "Your app only runs during business hours - how do you save money?"
+- "You're building a banking app - what security features do you enable"
+- "Your app only runs during business hours - how do you save money"
 
 #### **Assess Understanding**
 Quiz questions:
-- What's the difference between Standard S1 and Premium P1?
-- Why would you choose Serverless over Provisioned?
-- What security features are free?
-- How does GRS differ from LRS backup?
+- What's the difference between Standard S1 and Premium P1
+- Why would you choose Serverless over Provisioned
+- What security features are free
+- How does GRS differ from LRS backup
 
 ### Discussion Topics
 
 **Cost Management**:
-- How do cloud costs differ from on-premise?
-- When does serverless make financial sense?
-- What's the total cost of ownership?
+- How do cloud costs differ from on-premise
+- When does serverless make financial sense
+- What's the total cost of ownership
 
 **Security**:
-- What's defense in depth?
-- Why is TDE free but Defender costs money?
-- How do firewall rules work?
+- What's defense in depth
+- Why is TDE free but Defender costs money
+- How do firewall rules work
 
 **Architecture**:
-- Why separate SQL Server from databases?
-- What are resource groups for?
-- How do regions affect applications?
+- Why separate SQL Server from databases
+- What are resource groups for
+- How do regions affect applications
 
 **Best Practices**:
 - Naming conventions
@@ -561,7 +561,7 @@ Quiz questions:
 
 ---
 
-## ?? Additional Learning Resources
+##  Additional Learning Resources
 
 ### Included Documentation
 
@@ -591,19 +591,19 @@ This project includes comprehensive guides:
 
 ---
 
-## ?? Important Disclaimers
+##  Important Disclaimers
 
-### ?? **THIS IS A TRAINING SIMULATION**
+###  **THIS IS A TRAINING SIMULATION**
 
-- ? **Safe for learning**: No connection to real Azure
-- ? **Zero cost**: No charges ever
-- ? **No credentials needed**: No Azure account required
-- ? **Unlimited experiments**: Create/delete freely
+-  **Safe for learning**: No connection to real Azure
+-  **Zero cost**: No charges ever
+-  **No credentials needed**: No Azure account required
+-  **Unlimited experiments**: Create/delete freely
 
-- ? **Not for production**: Don't use for real applications
-- ? **No data persistence**: Restarts clear all data
-- ? **No real Azure API calls**: Everything is simulated
-- ? **Simplified**: Some advanced features are omitted
+-  **Not for production**: Don't use for real applications
+-  **No data persistence**: Restarts clear all data
+-  **No real Azure API calls**: Everything is simulated
+-  **Simplified**: Some advanced features are omitted
 
 ### Data Privacy
 
@@ -616,28 +616,28 @@ This project includes comprehensive guides:
 ### Limitations
 
 **This training environment simulates:**
-- ? Azure Portal UI and navigation
-- ? SQL Server and Database creation workflows
-- ? Resource management concepts
-- ? Pricing information (accurate as of 2025)
-- ? Configuration options
+-  Azure Portal UI and navigation
+-  SQL Server and Database creation workflows
+-  Resource management concepts
+-  Pricing information (accurate as of 2025)
+-  Configuration options
 
 **This does NOT simulate:**
-- ? Actual database functionality (no SQL queries)
-- ? Real network connections
-- ? Actual billing or payments
-- ? Azure API responses
-- ? Multi-user collaboration features
-- ? Data persistence across restarts
+-  Actual database functionality (no SQL queries)
+-  Real network connections
+-  Actual billing or payments
+-  Azure API responses
+-  Multi-user collaboration features
+-  Data persistence across restarts
 
 ---
 
-## ?? Customization & Extension
+##  Customization & Extension
 
 ### For Instructors Who Want to Modify
 
 #### **Add New Resources**
-Want to add Virtual Machines or Storage Accounts?
+Want to add Virtual Machines or Storage Accounts
 
 1. Create a new model in `Models/` (e.g., `VirtualMachine.cs`)
 2. Add methods to `AzureResourceService.cs`
@@ -666,7 +666,7 @@ Modify `azure-portal.css` to change:
 
 ---
 
-## ?? Troubleshooting
+##  Troubleshooting
 
 ### Common Issues
 
@@ -693,7 +693,7 @@ Modify `azure-portal.css` to change:
 
 ---
 
-## ?? Support & Community
+##  Support & Community
 
 ### For Instructors
 
@@ -710,20 +710,20 @@ Modify `azure-portal.css` to change:
 
 ---
 
-## ?? License
+##  License
 
 This project is provided as-is for educational purposes. 
 
 **Usage Rights:**
-- ? Free to use in educational institutions
-- ? Free to modify for your courses
-- ? Free to share with students
-- ? Not for commercial use without permission
-- ? Not to be sold or monetized
+-  Free to use in educational institutions
+-  Free to modify for your courses
+-  Free to share with students
+-  Not for commercial use without permission
+-  Not to be sold or monetized
 
 ---
 
-## ?? Acknowledgments
+##  Acknowledgments
 
 **Built for Education**:
 - Designed specifically for classroom teaching
@@ -742,7 +742,7 @@ This project is provided as-is for educational purposes.
 
 ---
 
-## ?? Contact
+##  Contact
 
 **Project Maintainer**: [Your Name/Institution]
 **Course**: [Your Course Name]
@@ -754,19 +754,19 @@ This project is provided as-is for educational purposes.
 
 <div align="center">
 
-### ?? Education • ?? Learning • ?? Cloud Computing
+###  Education â€¢  Learning â€¢  Cloud Computing
 
-**Built with ?? for students learning Azure**
+**Built with  for students learning Azure**
 
 *No subscription required. No costs incurred. Just learning.*
 
 ---
 
 **Perfect for**:
-Database Administration • Cloud Computing • DevOps • Azure Certification Prep • IT Training Programs
+Database Administration â€¢ Cloud Computing â€¢ DevOps â€¢ Azure Certification Prep â€¢ IT Training Programs
 
 ---
 
-? **Star this project** if you find it useful for teaching!
+ **Star this project** if you find it useful for teaching!
 
 </div>
