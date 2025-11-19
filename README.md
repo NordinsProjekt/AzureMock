@@ -2,10 +2,10 @@
 
 <div align="center">
 
-![Azure Training](https://img.shields.io/badge/Azure-Training%20Environment-0078D4style=for-the-badge&logo=microsoft-azure&logoColor=white)
-![Education](https://img.shields.io/badge/Purpose-Education-successstyle=for-the-badge&logo=academia&logoColor=white)
-![No Cost](https://img.shields.io/badge/Cost-FREE-brightgreenstyle=for-the-badge)
-![.NET 9](https://img.shields.io/badge/.NET-9.0-512BD4style=for-the-badge&logo=dotnet&logoColor=white)
+![Azure Training](https://img.shields.io/badge/Azure-Training%20Environment-0078D4?style=for-the-badge&logo=microsoft-azure&logoColor=white)
+![Education](https://img.shields.io/badge/Purpose-Education-success?style=for-the-badge&logo=academia&logoColor=white)
+![No Cost](https://img.shields.io/badge/Cost-FREE-brightgreen?style=for-the-badge)
+![.NET 9](https://img.shields.io/badge/.NET-9.0-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
 
 ###  A Safe, Cost-Free Azure Learning Platform for Classroom Education
 
