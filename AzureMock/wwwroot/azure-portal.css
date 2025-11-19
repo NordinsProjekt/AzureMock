@@ -633,3 +633,106 @@ body {
         font-size: 9px;
     }
 }
+
+/* Info Tooltip Styles */
+.info-tooltip {
+    position: relative;
+    display: inline-block;
+    margin-left: 6px;
+    vertical-align: middle;
+}
+
+.info-tooltip-content {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: calc(100% + 8px);
+    background: white;
+    border: 1px solid var(--azure-border);
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    padding: 12px;
+    min-width: 280px;
+    max-width: 400px;
+    z-index: 1000;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.info-tooltip-content::before {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: white;
+}
+
+.info-tooltip-content::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 7px solid transparent;
+    border-top-color: var(--azure-border);
+    margin-top: 1px;
+    z-index: -1;
+}
+
+.info-tooltip-title {
+    font-weight: 600;
+    color: var(--azure-dark-gray);
+    margin-bottom: 6px;
+    font-size: 14px;
+}
+
+.info-tooltip-body {
+    color: #605e5c;
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.info-tooltip-link {
+    margin-top: 8px;
+}
+
+.info-tooltip-link a {
+    color: var(--azure-blue);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.info-tooltip-link a:hover {
+    text-decoration: underline;
+}
+
+/* Adjust tooltip position for options at the bottom of the page */
+.azure-form-group:last-child .info-tooltip-content {
+    bottom: auto;
+    top: calc(100% + 8px);
+}
+
+.azure-form-group:last-child .info-tooltip-content::before {
+    top: auto;
+    bottom: 100%;
+    border-top-color: transparent;
+    border-bottom-color: white;
+}
+
+.azure-form-group:last-child .info-tooltip-content::after {
+    top: auto;
+    bottom: 100%;
+    border-top-color: transparent;
+    border-bottom-color: var(--azure-border);
+    margin-top: 0;
+    margin-bottom: 1px;
+}
+
+/* Label with tooltip styling */
+.azure-form-group label.label-with-tooltip {
+    display: flex;
+    align-items: center;
+}

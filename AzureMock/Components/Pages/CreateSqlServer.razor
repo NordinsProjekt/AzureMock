@@ -1,6 +1,7 @@
 @page "/create-sql-server"
 @layout AzurePortalLayout
 @rendermode InteractiveServer
+@using AzureMock.Components.Shared
 
 <PageTitle>Create SQL Server - Microsoft Azure</PageTitle>
 
@@ -47,7 +48,13 @@
                     <h3>Project Details</h3>
                     
                     <div class="azure-form-group">
-                        <label>Subscription *</label>
+                        <label class="label-with-tooltip">
+                            Subscription *
+                            <InfoTooltip Title="Azure Subscription">
+                                A subscription is a billing container that groups your resources together. All resources in a subscription are billed together and share the same credit limit.
+                                <strong>Student subscription provides $100 in free credits.</strong>
+                            </InfoTooltip>
+                        </label>
                         <select>
                             <option value="azure-student" selected>Azure for Students</option>
                             <option value="pay-as-you-go">Pay-As-You-Go</option>
@@ -57,7 +64,13 @@
                     </div>
                     
                     <div class="azure-form-group">
-                        <label>Resource Group *</label>
+                        <label class="label-with-tooltip">
+                            Resource Group *
+                            <InfoTooltip Title="Resource Groups">
+                                A resource group is a logical container that holds related Azure resources. It helps you organize and manage resources that share the same lifecycle.
+                                <strong>No additional cost</strong> - Resource groups are free to create and use.
+                            </InfoTooltip>
+                        </label>
                         <select @bind="NewServer.ResourceGroup">
                             <option value="">Select a resource group</option>
                             @foreach (var rg in ResourceGroups)
@@ -91,7 +104,13 @@
                     </div>
 
                     <div class="azure-form-group">
-                        <label>Location *</label>
+                        <label class="label-with-tooltip">
+                            Location *
+                            <InfoTooltip Title="Server Location">
+                                The Azure region where your SQL Server will be hosted. Choose a location closest to your users for better performance.
+                                <strong>Different regions may have different pricing.</strong> Closer regions typically offer lower latency.
+                            </InfoTooltip>
+                        </label>
                         <select @bind="NewServer.Location">
                             <option value="">Select a location</option>
                             @foreach (var location in Locations)
@@ -102,7 +121,13 @@
                     </div>
 
                     <div class="azure-form-group">
-                        <label>SQL Server Version</label>
+                        <label class="label-with-tooltip">
+                            SQL Server Version
+                            <InfoTooltip Title="SQL Server Version">
+                                The version of SQL Server to use. Version 12.0 is the latest and includes all modern features and security updates.
+                                <strong>No additional cost</strong> for choosing the latest version. Recommended for new deployments.
+                            </InfoTooltip>
+                        </label>
                         <select @bind="NewServer.Version">
                             <option value="12.0">12.0 (Latest)</option>
                             <option value="11.0">11.0</option>
@@ -146,18 +171,30 @@
                     <div class="azure-form-group">
                         <label>
                             <input type="radio" name="connectivity" checked /> Public endpoint (recommended for training)
+                            <InfoTooltip Title="Public Endpoint">
+                                Allows connections from the internet using firewall rules. This is the easiest option for learning and development.
+                                <strong>Cost: Included</strong> - No additional networking charges for public endpoints in training scenarios.
+                            </InfoTooltip>
                         </label>
                     </div>
                     
                     <div class="azure-form-group">
                         <label>
                             <input type="radio" name="connectivity" /> Private endpoint
+                            <InfoTooltip Title="Private Endpoint">
+                                Uses Azure Private Link to connect securely through a private IP address within your virtual network. Provides better security by not exposing your server to the public internet.
+                                <strong>Cost: ~$7-10/month</strong> per private endpoint plus data processing charges.
+                            </InfoTooltip>
                         </label>
                     </div>
                     
                     <div class="azure-form-group">
                         <label>
                             <input type="radio" name="connectivity" /> No access
+                            <InfoTooltip Title="No Access">
+                                Disables all network connectivity to the server. You won't be able to connect until you configure connectivity later.
+                                <strong>Cost: $0</strong> - No networking charges, but server charges still apply.
+                            </InfoTooltip>
                         </label>
                     </div>
                 </div>
@@ -167,6 +204,10 @@
                     <div class="azure-form-group">
                         <label>
                             <input type="checkbox" checked /> Allow Azure services and resources to access this server
+                            <InfoTooltip Title="Azure Services Access">
+                                Permits other Azure services (like App Services, Azure Functions, Logic Apps) to connect to your SQL Server.
+                                <strong>Cost: Free</strong> - Enables seamless Azure-to-Azure connections without exposing your server publicly.
+                            </InfoTooltip>
                         </label>
                         <small>Allows Azure services like App Service, Functions to connect</small>
                     </div>
@@ -174,6 +215,10 @@
                     <div class="azure-form-group">
                         <label>
                             <input type="checkbox" checked /> Add current client IP address
+                            <InfoTooltip Title="Client IP Firewall Rule">
+                                Automatically adds your current IP address to the firewall, allowing immediate access from your computer.
+                                <strong>Cost: Free</strong> - Firewall rules don't incur charges. Remember to update if your IP changes.
+                            </InfoTooltip>
                         </label>
                         <small>Current IP: 192.168.1.100 (simulated)</small>
                     </div>
@@ -185,6 +230,10 @@
                     <div class="azure-form-group">
                         <label>
                             <input type="radio" name="connpolicy" checked /> Default
+                            <InfoTooltip Title="Default Connection Policy">
+                                Azure automatically chooses between Proxy and Redirect based on where the connection originates. This is the recommended setting for most scenarios.
+                                <strong>Cost: Included</strong> - Optimal balance of performance and compatibility.
+                            </InfoTooltip>
                         </label>
                         <small>Connection policy determines how clients connect to your SQL Server (Recommended)</small>
                     </div>
@@ -192,6 +241,10 @@
                     <div class="azure-form-group">
                         <label>
                             <input type="radio" name="connpolicy" /> Proxy
+                            <InfoTooltip Title="Proxy Connection Policy">
+                                All connections go through the Azure SQL Database gateways. More compatible with restrictive firewalls but slightly higher latency.
+                                <strong>Cost: Included</strong> - May see 5-10ms additional latency compared to Redirect.
+                            </InfoTooltip>
                         </label>
                         <small>All connections are proxied via the Azure SQL Database gateways</small>
                     </div>
@@ -199,6 +252,10 @@
                     <div class="azure-form-group">
                         <label>
                             <input type="radio" name="connpolicy" /> Redirect
+                            <InfoTooltip Title="Redirect Connection Policy">
+                                After initial connection, the client connects directly to the database node for lowest latency. Requires opening more ports (11000-11999).
+                                <strong>Cost: Included</strong> - Best performance but requires specific firewall configuration.
+                            </InfoTooltip>
                         </label>
                         <small>Clients establish connections directly to the node hosting the database</small>
                     </div>
@@ -208,7 +265,13 @@
                     <h3>Encrypted Connections</h3>
                     
                     <div class="azure-form-group">
-                        <label>Minimum TLS version</label>
+                        <label class="label-with-tooltip">
+                            Minimum TLS version
+                            <InfoTooltip Title="TLS Version">
+                                Transport Layer Security (TLS) encrypts data in transit. TLS 1.2 is the current standard and provides strong security.
+                                <strong>Cost: Free</strong> - Encryption is included. Use TLS 1.2 for best security.
+                            </InfoTooltip>
+                        </label>
                         <select>
                             <option value="1.2" selected>1.2</option>
                             <option value="1.1">1.1</option>
@@ -224,6 +287,10 @@
                     <div class="azure-form-group">
                         <label>
                             <input type="checkbox" checked /> Enable public network access
+                            <InfoTooltip Title="Public Network Access">
+                                When enabled, allows connections from public IP addresses (controlled by firewall rules). Disable for maximum security using only private endpoints.
+                                <strong>Cost: Free</strong> - Choice doesn't affect pricing, only security posture.
+                            </InfoTooltip>
                         </label>
                         <small>Allow public network access to this server. If disabled, access is allowed only through private endpoints</small>
                     </div>
@@ -240,6 +307,10 @@
                     <div class="azure-form-group">
                         <label>
                             <input type="checkbox" /> Use only Microsoft Entra authentication
+                            <InfoTooltip Title="Microsoft Entra (Azure AD) Authentication">
+                                Uses Azure Active Directory for authentication instead of SQL Server logins. Provides centralized identity management and multi-factor authentication.
+                                <strong>Cost: Included</strong> in Azure AD Basic (free). Premium features like MFA require Azure AD Premium (~$6/user/month).
+                            </InfoTooltip>
                         </label>
                         <small>Use Azure Active Directory (Entra ID) authentication only, disable SQL authentication</small>
                     </div>
@@ -247,6 +318,10 @@
                     <div class="azure-form-group">
                         <label>
                             <input type="checkbox" /> Set Microsoft Entra admin
+                            <InfoTooltip Title="Entra Admin">
+                                Designate an Azure AD user or group as the administrator for this server. This admin can manage the server using their Azure AD credentials.
+                                <strong>Cost: Free</strong> - No additional cost for setting an Entra admin.
+                            </InfoTooltip>
                         </label>
                         <small>Configure an Azure AD user or group as the admin for this server</small>
                     </div>
@@ -256,7 +331,13 @@
                     <h3>Identity</h3>
                     
                     <div class="azure-form-group">
-                        <label>System assigned managed identity</label>
+                        <label class="label-with-tooltip">
+                            System assigned managed identity
+                            <InfoTooltip Title="System-Assigned Managed Identity">
+                                Automatically creates an identity for your SQL Server in Azure AD. This allows the server to authenticate to other Azure services without storing credentials.
+                                <strong>Cost: Free</strong> - Managed identities don't incur additional charges and improve security.
+                            </InfoTooltip>
+                        </label>
                         <select>
                             <option value="off" selected>Off</option>
                             <option value="on">On</option>
@@ -265,7 +346,13 @@
                     </div>
                     
                     <div class="azure-form-group">
-                        <label>User assigned managed identity</label>
+                        <label class="label-with-tooltip">
+                            User assigned managed identity
+                            <InfoTooltip Title="User-Assigned Managed Identity">
+                                Uses a pre-created managed identity that you control. Useful when you want to share an identity across multiple resources.
+                                <strong>Cost: Free</strong> - Identity creation and use are free, but you manage the lifecycle separately.
+                            </InfoTooltip>
+                        </label>
                         <select>
                             <option value="none" selected>None</option>
                         </select>
@@ -279,6 +366,10 @@
                     <div class="azure-form-group">
                         <label>
                             <input type="checkbox" checked /> Enable Microsoft Defender for SQL
+                            <InfoTooltip Title="Microsoft Defender for SQL">
+                                Provides advanced threat protection with vulnerability assessment, threat detection, and security alerts. Monitors for SQL injection, unusual access patterns, and potential threats.
+                                <strong>Cost: ~$15/server/month</strong> - Essential for production environments. Includes advanced security features.
+                            </InfoTooltip>
                         </label>
                         <small>Provides advanced threat protection and vulnerability assessment</small>
                     </div>
@@ -286,6 +377,10 @@
                     <div class="azure-form-group">
                         <label>
                             <input type="checkbox" checked /> Enable Transparent Data Encryption (TDE)
+                            <InfoTooltip Title="Transparent Data Encryption">
+                                Encrypts the database files at rest, protecting data if physical media is stolen. Encryption and decryption are automatic and transparent to applications.
+                                <strong>Cost: Included</strong> - TDE is free for Azure SQL and enabled by default. No performance impact.
+                            </InfoTooltip>
                         </label>
                         <small>Encrypts data at rest</small>
                     </div>
@@ -297,6 +392,10 @@
                     <div class="azure-form-group">
                         <label>
                             <input type="checkbox" /> Enable ledger
+                            <InfoTooltip Title="SQL Ledger">
+                                Provides tamper-evidence for your database by creating a cryptographic proof of data integrity. Useful for audit and compliance scenarios.
+                                <strong>Cost: Included</strong> - No additional charge for ledger features. May require additional storage for ledger tables.
+                            </InfoTooltip>
                         </label>
                         <small>Provides tamper-evidence capabilities for your databases</small>
                     </div>
@@ -308,6 +407,10 @@
                     <div class="azure-form-group">
                         <label>
                             <input type="checkbox" checked /> Enable SQL Auditing
+                            <InfoTooltip Title="SQL Auditing">
+                                Tracks database events and writes them to an audit log. Essential for compliance and security monitoring. Logs can be sent to Azure Storage, Log Analytics, or Event Hubs.
+                                <strong>Cost: Storage costs apply</strong> - ~$0.02/GB/month for storage. Log Analytics adds ~$2.30/GB ingested.
+                            </InfoTooltip>
                         </label>
                         <small>Tracks database events and writes them to audit logs in your Azure storage account, Log Analytics workspace, or Event Hubs</small>
                     </div>
@@ -319,7 +422,13 @@
                     <h3>Data Source</h3>
                     
                     <div class="azure-form-group">
-                        <label>Start with</label>
+                        <label class="label-with-tooltip">
+                            Start with
+                            <InfoTooltip Title="Initial Data Source">
+                                Choose whether to start with an empty server or load sample data. Sample data is useful for learning and testing.
+                                <strong>Cost: Free</strong> - Sample data doesn't add to costs beyond normal storage.
+                            </InfoTooltip>
+                        </label>
                         <select>
                             <option value="none" selected>None (blank server)</option>
                             <option value="sample">Sample</option>
@@ -332,7 +441,13 @@
                     <h3>Server Configuration</h3>
                     
                     <div class="azure-form-group">
-                        <label>Server collation</label>
+                        <label class="label-with-tooltip">
+                            Server collation
+                            <InfoTooltip Title="Server Collation">
+                                Determines how the server sorts and compares text data. CI = Case Insensitive, AS = Accent Sensitive. Default works for most scenarios.
+                                <strong>Cost: Free</strong> - Choice doesn't affect costs. Difficult to change later, so choose carefully.
+                            </InfoTooltip>
+                        </label>
                         <select>
                             <option value="SQL_Latin1_General_CP1_CI_AS" selected>SQL_Latin1_General_CP1_CI_AS (Default)</option>
                             <option value="SQL_Latin1_General_CP1_CS_AS">SQL_Latin1_General_CP1_CS_AS</option>
@@ -352,12 +467,20 @@
                     <div class="azure-form-group">
                         <label>
                             <input type="radio" name="maintenance" checked /> System default (5pm to 8am local time)
+                            <InfoTooltip Title="System Default Maintenance">
+                                Azure automatically schedules maintenance during off-peak hours. Most reliable option as Azure optimizes timing.
+                                <strong>Cost: Free</strong> - No difference in pricing between maintenance windows.
+                            </InfoTooltip>
                         </label>
                     </div>
                     
                     <div class="azure-form-group">
                         <label>
                             <input type="radio" name="maintenance" /> Weekday window
+                            <InfoTooltip Title="Weekday Maintenance Window">
+                                Schedules maintenance Monday to Thursday nights (10pm-6am). Good if weekends are critical for your business.
+                                <strong>Cost: Free</strong> - Same cost as other windows, just different timing.
+                            </InfoTooltip>
                         </label>
                         <small>Monday to Thursday 10pm to 6am local time</small>
                     </div>
@@ -365,6 +488,10 @@
                     <div class="azure-form-group">
                         <label>
                             <input type="radio" name="maintenance" /> Weekend window
+                            <InfoTooltip Title="Weekend Maintenance Window">
+                                Schedules maintenance Friday night through Monday morning. Ideal if weekdays are your peak business time.
+                                <strong>Cost: Free</strong> - Choose based on your business needs, not cost.
+                            </InfoTooltip>
                         </label>
                         <small>Friday 10pm to Monday 6am local time</small>
                     </div>
@@ -546,11 +673,11 @@
                     }
 
                     <div class="azure-info-box" style="margin-top: 24px;">
-                        <p><strong>?? Estimated Cost:</strong> $0.00/month (Training Environment - No actual costs)</p>
+                        <p><strong>Estimated Cost:</strong> $0.00/month (Training Environment - No actual costs)</p>
                     </div>
 
                     <div class="azure-info-box" style="margin-top: 16px;">
-                        <p><strong>?? Training Environment:</strong> This is a simulated SQL Server. No actual Azure resources or costs will be incurred.</p>
+                        <p><strong>Training Environment:</strong> This is a simulated SQL Server. No actual Azure resources or costs will be incurred.</p>
                     </div>
                 </div>
             }

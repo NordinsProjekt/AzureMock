@@ -1,6 +1,7 @@
 @page "/sql-servers/{ServerName}/create-database"
 @layout AzurePortalLayout
 @rendermode InteractiveServer
+@using AzureMock.Components.Shared
 
 <PageTitle>Create Database - Microsoft Azure</PageTitle>
 
@@ -69,7 +70,13 @@
                     </div>
 
                     <div class="azure-form-group">
-                        <label>Want to use SQL elastic pool?</label>
+                        <label class="label-with-tooltip">
+                            Want to use SQL elastic pool?
+                            <InfoTooltip Title="SQL Elastic Pool">
+                                Elastic pools let multiple databases share compute resources (DTUs or vCores). Great for applications with variable usage patterns where databases aren't used heavily at the same time.
+                                <strong>Cost: Can save 20-50%</strong> compared to individual databases. Pools start at ~$15/month for Basic tier.
+                            </InfoTooltip>
+                        </label>
                         <select>
                             <option value="no" selected>No</option>
                             <option value="yes">Yes</option>
@@ -82,28 +89,52 @@
                     <h3>Compute + Storage</h3>
                     
                     <div class="azure-form-group">
-                        <label>Pricing Tier *</label>
+                        <label class="label-with-tooltip">
+                            Pricing Tier *
+                            <InfoTooltip Title="Pricing Tiers">
+                                <strong>Basic ($5/month):</strong> Small databases, light workloads, 5 DTUs<br/>
+                                <strong>Standard S0 ($15/month):</strong> Small to medium apps, 10 DTUs<br/>
+                                <strong>Standard S1 ($30/month):</strong> General workloads, 20 DTUs<br/>
+                                <strong>Standard S2 ($75/month):</strong> Most business apps, 50 DTUs<br/>
+                                <strong>Premium P1 ($465/month):</strong> Mission-critical apps, 125 DTUs<br/>
+                                <strong>Premium P2 ($930/month):</strong> High-performance apps, 250 DTUs<br/>
+                                DTU = Database Transaction Unit (combined measure of CPU, memory, I/O)
+                            </InfoTooltip>
+                        </label>
                         <select @bind="NewDatabase.PricingTier">
-                            <option value="Basic">Basic - For simple applications (5 DTUs, 2GB)</option>
-                            <option value="Standard S0">Standard S0 - Balanced (10 DTUs, 250GB)</option>
-                            <option value="Standard S1">Standard S1 - General workloads (20 DTUs, 250GB)</option>
-                            <option value="Standard S2">Standard S2 - Most applications (50 DTUs, 250GB)</option>
-                            <option value="Premium P1">Premium P1 - Business critical (125 DTUs, 500GB)</option>
-                            <option value="Premium P2">Premium P2 - High performance (250 DTUs, 500GB)</option>
+                            <option value="Basic">Basic - For simple applications (5 DTUs, 2GB) - $5/mo</option>
+                            <option value="Standard S0">Standard S0 - Balanced (10 DTUs, 250GB) - $15/mo</option>
+                            <option value="Standard S1">Standard S1 - General workloads (20 DTUs, 250GB) - $30/mo</option>
+                            <option value="Standard S2">Standard S2 - Most applications (50 DTUs, 250GB) - $75/mo</option>
+                            <option value="Premium P1">Premium P1 - Business critical (125 DTUs, 500GB) - $465/mo</option>
+                            <option value="Premium P2">Premium P2 - High performance (250 DTUs, 500GB) - $930/mo</option>
                         </select>
                     </div>
 
                     <div class="azure-form-group">
-                        <label>Compute Tier</label>
+                        <label class="label-with-tooltip">
+                            Compute Tier
+                            <InfoTooltip Title="Compute Tier Options">
+                                <strong>Provisioned:</strong> Resources are always available. Best for consistent workloads. You pay for allocated resources 24/7.<br/>
+                                <strong>Serverless:</strong> Auto-pauses during inactivity and auto-scales. Best for intermittent, unpredictable workloads. You only pay when the database is active.
+                                <strong>Serverless can save 50-70%</strong> for databases used sporadically (dev/test environments).
+                            </InfoTooltip>
+                        </label>
                         <select @bind="NewDatabase.ComputeTier">
-                            <option value="Provisioned">Provisioned</option>
-                            <option value="Serverless">Serverless</option>
+                            <option value="Provisioned">Provisioned - Always on, predictable costs</option>
+                            <option value="Serverless">Serverless - Auto-pause & scale, pay per use</option>
                         </select>
                         <small>Provisioned: Consistent performance. Serverless: Auto-scaling with per-second billing</small>
                     </div>
 
                     <div class="azure-form-group">
-                        <label>Maximum Data Size (GB) *</label>
+                        <label class="label-with-tooltip">
+                            Maximum Data Size (GB) *
+                            <InfoTooltip Title="Database Size">
+                                The maximum amount of data your database can store. You can start small and increase later if needed.
+                                <strong>Cost:</strong> Storage is typically $0.10-$0.25/GB/month depending on tier. Basic tier limited to 2GB, Standard up to 1TB, Premium up to 4TB.
+                            </InfoTooltip>
+                        </label>
                         <input type="number" @bind="NewDatabase.MaxSizeGB" min="1" max="4096" />
                         <small>Maximum size for the database</small>
                     </div>
@@ -118,6 +149,10 @@
                     <div class="azure-form-group">
                         <label>
                             <input type="radio" name="redundancy" checked /> Locally-redundant backup storage
+                            <InfoTooltip Title="Locally-Redundant Storage (LRS)">
+                                Stores 3 copies of your backup data within a single datacenter. Protects against disk and rack failures.
+                                <strong>Cost: Lowest</strong> - ~$0.05/GB/month for backups. Suitable for non-critical data or when you have off-site backups.
+                            </InfoTooltip>
                         </label>
                         <small>Replicates data within a single datacenter (lowest cost)</small>
                     </div>
@@ -125,6 +160,10 @@
                     <div class="azure-form-group">
                         <label>
                             <input type="radio" name="redundancy" /> Zone-redundant backup storage
+                            <InfoTooltip Title="Zone-Redundant Storage (ZRS)">
+                                Replicates backup data across 3 availability zones in the same region. Protects against datacenter-level failures.
+                                <strong>Cost: Medium</strong> - ~$0.0625/GB/month (25% more than LRS). Good balance of cost and availability.
+                            </InfoTooltip>
                         </label>
                         <small>Replicates data across availability zones</small>
                     </div>
@@ -132,6 +171,10 @@
                     <div class="azure-form-group">
                         <label>
                             <input type="radio" name="redundancy" /> Geo-redundant backup storage
+                            <InfoTooltip Title="Geo-Redundant Storage (GRS)">
+                                Replicates backups to a secondary region hundreds of miles away. Protects against regional disasters.
+                                <strong>Cost: Highest</strong> - ~$0.10/GB/month (double LRS cost). Essential for business-critical data and disaster recovery.
+                            </InfoTooltip>
                         </label>
                         <small>Replicates data to a secondary region (highest durability)</small>
                     </div>
@@ -146,7 +189,14 @@
                     </div>
                     
                     <div class="azure-form-group">
-                        <label>Connectivity method</label>
+                        <label class="label-with-tooltip">
+                            Connectivity method
+                            <InfoTooltip Title="Connectivity Methods">
+                                <strong>Public endpoint:</strong> Access via internet with firewall rules. Easiest for getting started.<br/>
+                                <strong>Private endpoint:</strong> Access through Azure Virtual Network only. Most secure option.<br/>
+                                <strong>No access:</strong> Blocks all connections. Configure later when ready.
+                            </InfoTooltip>
+                        </label>
                         <select>
                             <option value="public" selected>Public endpoint (selected networks)</option>
                             <option value="private">Private endpoint</option>
@@ -161,6 +211,10 @@
                     <div class="azure-form-group">
                         <label>
                             <input type="checkbox" checked /> Allow Azure services and resources to access this server
+                            <InfoTooltip Title="Azure Services Access">
+                                Allows Azure services in any subscription to connect. Necessary for Azure App Services, Functions, Logic Apps to access your database.
+                                <strong>Cost: Free</strong> - No charges for Azure service connections.
+                            </InfoTooltip>
                         </label>
                         <small>Allows Azure services like App Service, Functions to connect</small>
                     </div>
@@ -168,6 +222,10 @@
                     <div class="azure-form-group">
                         <label>
                             <input type="checkbox" checked /> Add current client IP address
+                            <InfoTooltip Title="Client IP Whitelist">
+                                Adds your current public IP to the firewall allowlist. Required to connect from your local machine using tools like SQL Server Management Studio.
+                                <strong>Cost: Free</strong> - Firewall rules have no cost. Update this if your IP address changes.
+                            </InfoTooltip>
                         </label>
                         <small>Current IP: 192.168.1.100 (simulated)</small>
                     </div>
@@ -179,6 +237,10 @@
                     <div class="azure-form-group">
                         <label>
                             <input type="radio" name="connection" checked /> Default
+                            <InfoTooltip Title="Default Policy">
+                                Azure decides between Proxy and Redirect based on connection origin. Recommended for most scenarios as it balances compatibility and performance.
+                                <strong>Impact:</strong> Optimal automatic selection. No cost difference.
+                            </InfoTooltip>
                         </label>
                         <small>Recommended for most scenarios</small>
                     </div>
@@ -186,6 +248,10 @@
                     <div class="azure-form-group">
                         <label>
                             <input type="radio" name="connection" /> Proxy
+                            <InfoTooltip Title="Proxy Policy">
+                                All traffic routed through Azure gateways. Works through most firewalls but adds 5-10ms latency. Use if you have firewall restrictions.
+                                <strong>Impact:</strong> Slightly higher latency, maximum compatibility.
+                            </InfoTooltip>
                         </label>
                         <small>Route all connections through Azure gateway</small>
                     </div>
@@ -193,6 +259,10 @@
                     <div class="azure-form-group">
                         <label>
                             <input type="radio" name="connection" /> Redirect
+                            <InfoTooltip Title="Redirect Policy">
+                                After initial handshake, client connects directly to database node. Lowest latency but requires ports 11000-11999 to be open on your firewall.
+                                <strong>Impact:</strong> Best performance, requires specific firewall configuration.
+                            </InfoTooltip>
                         </label>
                         <small>Direct connections for lower latency</small>
                     </div>
@@ -209,6 +279,10 @@
                     <div class="azure-form-group">
                         <label>
                             <input type="checkbox" checked /> Enable Microsoft Defender for SQL
+                            <InfoTooltip Title="Microsoft Defender">
+                                Monitors for threats, provides vulnerability assessments, and alerts on suspicious activities. Detects SQL injection attempts and unusual access patterns.
+                                <strong>Cost: ~$15/server/month</strong> - Shared across all databases on the server. Critical for production systems.
+                            </InfoTooltip>
                         </label>
                         <small>Provides advanced threat protection and vulnerability assessment</small>
                     </div>
@@ -216,6 +290,10 @@
                     <div class="azure-form-group">
                         <label>
                             <input type="checkbox" checked /> Enable Transparent Data Encryption (TDE)
+                            <InfoTooltip Title="TDE - Transparent Data Encryption">
+                                Encrypts database files, backups, and transaction logs at rest. Protects data if storage media is compromised. Fully transparent to applications with no code changes needed.
+                                <strong>Cost: Included</strong> - Free and enabled by default. No performance impact.
+                            </InfoTooltip>
                         </label>
                         <small>Encrypts data at rest</small>
                     </div>
@@ -227,6 +305,10 @@
                     <div class="azure-form-group">
                         <label>
                             <input type="checkbox" /> Enable ledger for this database
+                            <InfoTooltip Title="Database Ledger">
+                                Creates an immutable record of all database changes with cryptographic verification. Perfect for audit trails, compliance, and financial applications.
+                                <strong>Cost: Included</strong> - No extra charge. Minor storage overhead for ledger tables (typically 5-10% of database size).
+                            </InfoTooltip>
                         </label>
                         <small>Provides tamper-evidence capabilities for your data</small>
                     </div>
@@ -238,6 +320,10 @@
                     <div class="azure-form-group">
                         <label>
                             <input type="checkbox" /> Enable Microsoft Entra authentication only
+                            <InfoTooltip Title="Entra-Only Authentication">
+                                Disables SQL authentication and uses only Azure AD (Entra). Enables centralized identity management, MFA, and conditional access policies.
+                                <strong>Cost: Free</strong> for basic Azure AD. Premium features (MFA, Conditional Access) require Azure AD Premium (~$6/user/month).
+                            </InfoTooltip>
                         </label>
                         <small>Use Azure AD authentication instead of SQL authentication</small>
                     </div>
@@ -245,6 +331,10 @@
                     <div class="azure-form-group">
                         <label>
                             <input type="checkbox" /> Use managed identity
+                            <InfoTooltip Title="Managed Identity">
+                                Allows the database to authenticate to other Azure services without storing credentials in code. Essential security best practice for Azure applications.
+                                <strong>Cost: Free</strong> - Improves security at no additional cost.
+                            </InfoTooltip>
                         </label>
                         <small>Allow the database to authenticate to other Azure services</small>
                     </div>
@@ -256,7 +346,15 @@
                     <h3>Data Source</h3>
                     
                     <div class="azure-form-group">
-                        <label>Use existing data</label>
+                        <label class="label-with-tooltip">
+                            Use existing data
+                            <InfoTooltip Title="Data Source Options">
+                                <strong>None:</strong> Empty database, ready for your schema<br/>
+                                <strong>Backup:</strong> Restore from existing backup file<br/>
+                                <strong>Sample (AdventureWorksLT):</strong> Microsoft's sample database for learning and testing
+                                <strong>Cost: Free</strong> - Sample data doesn't incur extra charges.
+                            </InfoTooltip>
+                        </label>
                         <select>
                             <option value="none" selected>None</option>
                             <option value="backup">Backup</option>
@@ -270,10 +368,16 @@
                     <h3>Database Collation</h3>
                     
                     <div class="azure-form-group">
-                        <label>Collation</label>
+                        <label class="label-with-tooltip">
+                            Collation
+                            <InfoTooltip Title="Database Collation">
+                                Controls how text is sorted and compared. <strong>CI</strong> = Case Insensitive (ABC = abc), <strong>CS</strong> = Case Sensitive (ABC ? abc), <strong>AS</strong> = Accent Sensitive (é ? e).
+                                <strong>Cost: Free</strong> - No cost impact. Default (CI_AS) works for most applications. Hard to change later!
+                            </InfoTooltip>
+                        </label>
                         <select @bind="NewDatabase.Collation">
-                            <option value="SQL_Latin1_General_CP1_CI_AS">SQL_Latin1_General_CP1_CI_AS (Default)</option>
-                            <option value="SQL_Latin1_General_CP1_CS_AS">SQL_Latin1_General_CP1_CS_AS</option>
+                            <option value="SQL_Latin1_General_CP1_CI_AS">SQL_Latin1_General_CP1_CI_AS (Default - Case Insensitive)</option>
+                            <option value="SQL_Latin1_General_CP1_CS_AS">SQL_Latin1_General_CP1_CS_AS (Case Sensitive)</option>
                             <option value="Latin1_General_CI_AS">Latin1_General_CI_AS</option>
                             <option value="Latin1_General_CS_AS">Latin1_General_CS_AS</option>
                         </select>
@@ -287,18 +391,30 @@
                     <div class="azure-form-group">
                         <label>
                             <input type="radio" name="maintenance" checked /> System default (5pm to 8am local time)
+                            <InfoTooltip Title="System Default">
+                                Azure schedules maintenance during off-peak hours automatically. Typically evenings and nights in your datacenter's timezone.
+                                <strong>Availability:</strong> Minimal downtime, usually under 60 seconds during updates.
+                            </InfoTooltip>
                         </label>
                     </div>
                     
                     <div class="azure-form-group">
                         <label>
                             <input type="radio" name="maintenance" /> Weekday window
+                            <InfoTooltip Title="Weekday Window">
+                                Maintenance occurs Monday-Thursday nights. Good if your weekend traffic is critical.
+                                <strong>Downtime:</strong> Brief interruptions only during your specified window.
+                            </InfoTooltip>
                         </label>
                     </div>
                     
                     <div class="azure-form-group">
                         <label>
                             <input type="radio" name="maintenance" /> Weekend window
+                            <InfoTooltip Title="Weekend Window">
+                                Maintenance occurs Friday night through Monday morning. Ideal for businesses with weekday-critical operations.
+                                <strong>Downtime:</strong> Updates applied when it matters least to your users.
+                            </InfoTooltip>
                         </label>
                     </div>
                 </div>
@@ -419,11 +535,11 @@
                     </table>
 
                     <div class="azure-info-box" style="margin-top: 24px;">
-                        <p><strong>? Validation Passed</strong> - Your database configuration is ready to deploy</p>
+                        <p><strong>Validation Passed</strong> - Your database configuration is ready to deploy</p>
                     </div>
 
                     <div class="azure-info-box" style="margin-top: 16px;">
-                        <p><strong>?? Estimated Cost:</strong> $0.00/month (Training Environment - No actual costs)</p>
+                        <p><strong>Estimated Cost:</strong> $0.00/month (Training Environment - No actual costs)</p>
                     </div>
                 </div>
             }
@@ -445,7 +561,7 @@
                 @if (CurrentTab < 5)
                 {
                     <button class="azure-button azure-button-primary" @onclick="NextTab">
-                        Next: @GetNextTabName() ?
+                        Next: @GetNextTabName()
                     </button>
                 }
                 else
